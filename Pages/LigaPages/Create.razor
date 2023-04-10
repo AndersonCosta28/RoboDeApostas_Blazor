@@ -1,0 +1,27 @@
+﻿@page "/liga/create"
+@inject DatabaseContext context
+@inject NavigationManager NavigationManager
+@inject IToastService toastService
+
+<h3>Create</h3>
+<DisplayModel liga="this.liga" />
+<button class="btn btn-primary" @onclick="this.Salvar">Salvar</button>
+
+@code {
+    private Liga liga = new();
+
+    public void Salvar()
+    {
+        try
+        {
+            context.Liga.Add(liga);
+            context.SaveChanges();
+            NavigationManager.NavigateTo("liga");
+        }
+        catch (Exception e)
+        {
+            toastService.ShowError(e.Message);
+            toastService.ShowError(e.InnerException.Message);
+        }
+    }
+}

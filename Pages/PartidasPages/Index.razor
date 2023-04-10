@@ -1,0 +1,45 @@
+﻿@page "/partida"
+@inject DatabaseContext context
+<PageTitle>Partidas</PageTitle>
+<h4>Partidas armazenadas: @this.partidas.Count</h4>
+<div class="row justify-content-between">
+    <div class="col-4">
+        <input type="search" placeholder="Pesquisar" @bind="this.textoDePesquisa" />
+    </div>
+</div>
+<table class="table" style="width: 100%">
+    <thead>
+        <tr>
+            <th scope="col">Casa de aposta</th>
+            <th scope="col">Liga</th>
+            <th scope="col">Time da casa</th>
+            <th scope="col">Time visitante</th>
+            <th scope="col">Data</th>
+            <th scope="col">Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Partida partida in this.partidas.Where(p => p.NomeDaCasaDeAposta.ToLower().Contains(this.textoDePesquisa.ToLower()) || p.Liga.ToLower().Contains(textoDePesquisa.ToLower()) || p.NomeTimeDaCasa.ToLower().Contains(textoDePesquisa.ToLower()) || p.NomeTimeVisitante.ToLower().Contains(textoDePesquisa.ToLower()) || p.Data.Contains(textoDePesquisa)))
+        {
+            <tr>
+                <td>@partida.NomeDaCasaDeAposta</td>
+                <td>@partida.Liga</td>
+                <td>@partida.NomeTimeDaCasa</td>
+                <td>@partida.NomeTimeVisitante</td>
+                <td>@partida.Data</td>
+                <td><a href="@partida.LinkDaPartida" target="_blank">Link</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+    private string textoDePesquisa = "";
+    private List<Partida> partidas;
+
+    protected override void OnInitialized()
+    {
+        this.partidas = context.Partidas.ToList();
+    }
+}
+
+

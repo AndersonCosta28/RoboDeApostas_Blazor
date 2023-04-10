@@ -1,0 +1,39 @@
+﻿@inject DatabaseContext context
+@inject NavigationManager NavigationManager
+@inject IToastService toastService
+@page "/linkdaliga/edit/{id}"
+
+<h3>Edit</h3>
+<DisplayModel linkDaLiga="this.linkDaLiga" />
+<button class="btn btn-primary" @onclick="this.Salvar">Salvar</button>
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+    private LinkDaLiga linkDaLiga = new();
+
+    protected override void OnInitialized()
+    {
+        this.linkDaLiga = context.LinkDaLiga.Include(l => l.Liga).Where(c => c.Id == int.Parse(this.id)).First();
+    }
+
+    public void Salvar()
+    {
+        try
+        {
+            if (context.LinkDaLiga.Include(l => l.Liga).Where(l => l.LigaId == linkDaLiga.LigaId && l.CasaDeAposta == linkDaLiga.CasaDeAposta).Count() > 0)
+            {
+                toastService.ShowError("Já exista essa liga");
+                return;
+            }
+            context.LinkDaLiga.Update(linkDaLiga);
+            context.SaveChanges();
+            NavigationManager.NavigateTo("linkDaLiga");
+        }
+        catch (Exception e)
+        {
+            toastService.ShowError(e.Message);
+            toastService.ShowError(e.InnerException.Message);
+        }
+    }
+}

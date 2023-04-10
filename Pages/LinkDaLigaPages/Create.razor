@@ -1,0 +1,33 @@
+﻿@page "/linkdaliga/create"
+@inject DatabaseContext context
+@inject NavigationManager NavigationManager
+@inject IToastService toastService
+
+<h3>Create</h3>
+<DisplayModel linkDaLiga="this.linkDaLiga" />
+
+<button class="btn btn-primary" @onclick="this.Salvar">Salvar</button>
+
+@code {
+    private LinkDaLiga linkDaLiga = new();
+    public void Salvar()
+    {
+        try
+        {
+            if (context.LinkDaLiga.Include(l => l.Liga).Where(l => l.LigaId == linkDaLiga.LigaId && l.CasaDeAposta == linkDaLiga.CasaDeAposta).Count() > 0)
+            {
+                toastService.ShowError("Já exista essa liga");
+                return;
+            }
+            context.LinkDaLiga.Add(linkDaLiga);
+            context.SaveChanges();
+            NavigationManager.NavigateTo("linkDaLiga");
+        }
+        catch (Exception e)
+        {
+            toastService.ShowError(e.Message);
+            toastService.ShowError(e.InnerException.Message);
+        }
+
+    }
+}

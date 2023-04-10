@@ -1,0 +1,65 @@
+﻿@page "/linkdaliga"
+@inject DatabaseContext context
+@inject NavigationManager NavigationManager
+@inject DatabaseContext context
+@inject Bet365 bet365
+@inject Betway betway
+@inject Betano betano
+@inject Sportsbet_IO sportsbet_IO
+@inject SportingBet sportingBet
+@inject Betfair betfair
+
+<h3>Link das Ligas</h3>
+<h4>Quantidade de links: @links.Count</h4>
+<div class="row justify-content-between">
+    <div class="col-4">
+        <input type="search" placeholder="Pesquisar" @bind="this.textoDePesquisa" />
+    </div>
+    <div class="col-2">
+        <button class="btn btn-primary" @onclick="() => NavigationManager.NavigateTo(this.link)">Criar link</button>
+    </div>
+</div>
+<table class="table" style="width: 100%">
+    <thead>
+        <tr>
+            <th scope="col">Casa de aposta</th>
+            <th scope="col">Nome da liga</th>
+            <th scope="col">Link</th>
+            <th scope="col" colspan="2" style="text-align: center">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (LinkDaLiga link in this.links.Where(l => l.CasaDeAposta.ToLower().Contains(this.textoDePesquisa.ToLower()) || l.Liga.Nome.ToLower().Contains(textoDePesquisa.ToLower())))
+        {
+            int id = link.Id;
+            <tr>
+                <td>@link.CasaDeAposta</td>
+                <td>@link.Liga.Nome</td>
+                <td>@link.Link</td>
+                <td><button class="btn btn-secondary" @onclick="() => this.NavegarParaATelaDeEdicao(id)">Editar</button></td>
+                <td><button class="btn btn-danger" @onclick="() => this.NavegarParaATelaDeExclusao(id)">Deletar</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private List<LinkDaLiga> links;
+    private string link = "/linkDaLiga/create";
+    private string textoDePesquisa = "";
+    protected override Task OnInitializedAsync()
+    {
+        this.links = context.LinkDaLiga.Include(l => l.Liga).ToList();
+        return base.OnInitializedAsync();
+    }
+    public void NavegarParaATelaDeEdicao(int id)
+    {
+        Console.WriteLine(id);
+        NavigationManager.NavigateTo($"/linkDaLiga/edit/{id}");
+    }
+    public void NavegarParaATelaDeExclusao(int id)
+    {
+        NavigationManager.NavigateTo($"/linkDaLiga/delete/{id}");
+    }
+}

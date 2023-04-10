@@ -1,0 +1,35 @@
+﻿@inject DatabaseContext context
+@inject NavigationManager NavigationManager
+@inject IToastService toastService
+
+@page "/liga/delete/{id}"
+<h3>Delete</h3>
+<DisplayModel liga="this.liga" />
+<p>Deseja deletar este item?</p>
+<button class="btn btn-primary" @onclick="this.Deletar">Deletar</button>
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+    private Liga liga = new();
+
+    protected override void OnInitialized()
+    {
+        this.liga = context.Liga.Find(int.Parse(this.id));
+    }
+
+    public void Deletar()
+    {
+        try
+        {
+            context.Liga.Remove(liga);
+            context.SaveChanges();
+            NavigationManager.NavigateTo("linkDaLiga");
+        }
+        catch (Exception e)
+        {
+            toastService.ShowError(e.Message);
+            toastService.ShowError(e.InnerException.Message);
+        }
+    }
+}

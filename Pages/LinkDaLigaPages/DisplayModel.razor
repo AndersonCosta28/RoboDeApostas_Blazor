@@ -1,0 +1,64 @@
+﻿@inject DatabaseContext context
+
+<div class="campo">
+    <label for="link">Link:</label>
+    <input id="link" type="text" @bind="this.linkDaLiga.Link" />
+</div>
+<div class="campo">
+    <label for="casadeaposta">Casa de aposta:</label>
+    <select id="casadeaposta" @onchange="SelectedChangedCasa" required>
+        <option selected>Selecione um</option>
+        @foreach (CasaDeAposta casa in CasaDeAposta.CasasDeAposta)
+        {
+            if (casa.NomeDoSite == this.linkDaLiga.CasaDeAposta)
+            {
+                <option selected value="@casa.NomeDoSite">@casa.NomeDoSite</option>
+            }
+            else
+            {
+                <option value="@casa.NomeDoSite">@casa.NomeDoSite</option>
+            }
+        }
+    </select>
+</div>
+<div class="campo">
+    <label for="liga">Liga:</label>
+    <select id="liga" @onchange="SelectedChangedLiga" required>
+        <option value="" selected>Selecione um</option>
+        @foreach (Liga liga in this.ligas)
+        {
+            if (liga.Id == this.linkDaLiga.LigaId)
+            {
+                <option selected value="@liga.Id">@liga.Nome</option>
+            }
+            else
+            {
+                <option value="@liga.Id">@liga.Nome</option>
+            }
+        }
+    </select>
+</div>
+@code {
+    [Parameter]
+    public LinkDaLiga linkDaLiga { get; set; }
+    private List<Liga> ligas = new();
+
+    protected override void OnInitialized()
+    {
+        this.ligas = context.Liga.OrderBy(l => l.Nome).ToList();
+    }
+
+    private void SelectedChangedCasa(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+            linkDaLiga.CasaDeAposta = (string)e.Value;
+    }
+
+    private void SelectedChangedLiga(ChangeEventArgs e)
+    {
+        string valor = (string)e.Value ?? "";
+        Console.WriteLine(String.IsNullOrWhiteSpace(valor) + " - " + String.IsNullOrEmpty(valor));
+        if (e.Value is not null && !String.IsNullOrWhiteSpace(valor))
+            linkDaLiga.LigaId = int.Parse((string)e.Value);
+    }
+}

@@ -1,0 +1,11 @@
+﻿<div class="campo">
+    <label for="nome">Nome da liga</label>
+</div>
+<div class="campo">
+    <input id="nome" type="text" @bind="this.liga.Nome" />
+</div>
+
+@code {
+    [Parameter]
+    public Liga liga { get; set; }
+}

@@ -66,23 +66,25 @@ class SportingBet : CasaDeAposta
     public override async Task RodarPadraoAsync(string link)
     {
         var playwright = await Playwright.CreateAsync();
-        this.Navegador = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions() { Headless = !AbrirNavegador, Devtools = false });
-        this.Pagina = await this.Navegador.NewPageAsync(new BrowserNewPageOptions() { ExtraHTTPHeaders = this.ValoresParaInjetarNaPagina });
+        Navegador = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions() { Headless = !AbrirNavegador, Devtools = false });
+        Pagina = await Navegador.NewPageAsync(new BrowserNewPageOptions() { ExtraHTTPHeaders = ValoresParaInjetarNaPagina });
         try
         {
-            this.SalvarLog($"Executando Robo em {this.NomeDoSite} e na liga {LigaEmExecucao}");
-            this.ListaDePartidas.Clear();
-            await this.PreencherListaDePartidas(link);
-            foreach (Partida partida in this.ListaDePartidas)
-                await this.SalvarPartidaNoBanco(partida);
+            RobosEmExecucao.Add(this);
+            SalvarLog($"Executando Robo em {NomeDoSite} e na liga {LigaEmExecucao}");
+            ListaDePartidas.Clear();
+            await PreencherListaDePartidas(link);
+            foreach (Partida partida in ListaDePartidas)
+                await SalvarPartidaNoBanco(partida);
 
         }
         catch (Exception ex)
         {
-            this.SalvarLog($"Lançou erro no link: ${link} \n {ex.Message} \n {ex.InnerException.Message}");
+            SalvarLog($"Lançou erro no link: ${link} \n {ex.Message} \n {ex.InnerException.Message}");
         }
         finally
         {
+            RobosEmExecucao.Remove(this);
             await Pagina.CloseAsync();
             await Navegador.CloseAsync();
         }
@@ -92,33 +94,38 @@ class SportingBet : CasaDeAposta
     {
         List<Task> tasks = new()
         {
-            Task.Run(async () => await this.Pagina.GotoAsync(link, new() { Timeout = 0 })),
+            Task.Run(async () => await Pagina.GotoAsync(link, new() { Timeout = 0 })),
 
             Task.Run(async () =>
             {
-                var response = await Pagina.WaitForResponseAsync(r => r.Url.Contains("widget"));
-                var json = await response.TextAsync();
-                var data = ResponseListaDePartida.FromJson(json);
-                var tc = data.Widgets.Find(i => i.Type == "Composable").Payload.Items[0].ActiveChildren[0].Payload.Fixtures;
-                foreach (var item in tc)
+                try
                 {
-                    Partida partida = new Partida()
+                    var response = await Pagina.WaitForResponseAsync(r => r.Url.Contains("widget"));
+                    var json = await response.TextAsync();
+                    var data = ResponseListaDePartida.FromJson(json);
+                    var widget = data.Widgets.Find(i => i.Type == "Composable");
+                    if (widget == null) return;
+                    var tc = widget.Payload.Items[0].ActiveChildren[0].Payload.Fixtures;
+                    foreach (var item in tc)
                     {
-                        NomeTimeDaCasa = item.Participants.Find(p => p.Properties.Type == "HomeTeam").Name.Value,
-                        NomeTimeVisitante = item.Participants.Find(p => p.Properties.Type == "AwayTeam").Name.Value,
-                        DataCompleta = Funcoes.ConverterFusoHorario((DateTimeOffset)item.StartDate!),
-                        ODD_Vitoria_TimeDaCasa = item.OptionMarkets.Find(o => this.Titulo_ResultadoFinal.Contains(o.Name.Value)).Options[0].Price.Odds ?? 0,
-                        ODD_Empate_Ambos = item.OptionMarkets.Find(o => this.Titulo_ResultadoFinal.Contains(o.Name.Value)).Options[1].Price.Odds ?? 0,
-                        ODD_Vitoria_TimeVisitante = item.OptionMarkets.Find(o => this.Titulo_ResultadoFinal.Contains(o.Name.Value)).Options[2].Price.Odds ?? 0,
-                        ODD_VitoriaOuEmpate_TimeCasa = item.OptionMarkets.Find(o => this.Titulo_ChanceDupla.Contains(o.Name.Value)).Options[0].Price.Odds ?? 0,
-                        ODD_VitoriaOuEmpate_TimeVisitante = item.OptionMarkets.Find(o => this.Titulo_ChanceDupla.Contains(o.Name.Value)).Options[1].Price.Odds ?? 0,
-                        LinkDaPartida = $"{this.Link_PaginaInicial}/pt-br/sports/eventos/{item.Participants.Find(p => p.Properties.Type == "HomeTeam").Name.Value}-{item.Participants.Find(p => p.Properties.Type == "AwayTeam").Name.Value}-{item.Id}",
-                        Liga = LigaEmExecucao,
-                        NomeDaCasaDeAposta = this.NomeDoSite
-                    };
-
-                    this.ListaDePartidas.Add(partida);
+                        Partida partida = new Partida()
+                        {
+                            NomeTimeDaCasa = item.Participants.Find(p => p.Properties.Type == "HomeTeam").Name.Value,
+                            NomeTimeVisitante = item.Participants.Find(p => p.Properties.Type == "AwayTeam").Name.Value,
+                            DataCompleta = Funcoes.ConverterFusoHorario((DateTimeOffset)item.StartDate!),
+                            ODD_Vitoria_TimeDaCasa = item.OptionMarkets.Find(o => Titulo_ResultadoFinal.Contains(o.Name.Value)).Options[0].Price.Odds ?? 0,
+                            ODD_Empate_Ambos = item.OptionMarkets.Find(o => Titulo_ResultadoFinal.Contains(o.Name.Value)).Options[1].Price.Odds ?? 0,
+                            ODD_Vitoria_TimeVisitante = item.OptionMarkets.Find(o => Titulo_ResultadoFinal.Contains(o.Name.Value)).Options[2].Price.Odds ?? 0,
+                            ODD_VitoriaOuEmpate_TimeCasa = item.OptionMarkets.Find(o => Titulo_ChanceDupla.Contains(o.Name.Value)).Options[0].Price.Odds ?? 0,
+                            ODD_VitoriaOuEmpate_TimeVisitante = item.OptionMarkets.Find(o => Titulo_ChanceDupla.Contains(o.Name.Value)).Options[1].Price.Odds ?? 0,
+                            LinkDaPartida = $"{Link_PaginaInicial}/pt-br/sports/eventos/{item.Participants.Find(p => p.Properties.Type == "HomeTeam").Name.Value}-{item.Participants.Find(p => p.Properties.Type == "AwayTeam").Name.Value}-{item.Id}",
+                            Liga = LigaEmExecucao,
+                            NomeDaCasaDeAposta = NomeDoSite
+                        };
+                        ListaDePartidas.Add(partida);
+                    }
                 }
+                catch(Exception){ throw; }
             })
         };
 

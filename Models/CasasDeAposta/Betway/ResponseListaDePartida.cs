@@ -4,7 +4,7 @@
 //
 //    using RoboDeApostas.Models.CasasDeAposta.Betway.ListaDePartida;
 //
-//    var responseListaDePartida = ListaDePartida.FromJson(jsonString);
+//    var responseListaDePartida = ListaDePartida.FromJsonList(jsonString);
 
 namespace RoboDeApostas.Models.CasasDeAposta.BetwayAPI.ListaDePartida
 {

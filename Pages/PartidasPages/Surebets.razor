@@ -4,7 +4,7 @@
 
 <PageTitle>Surebet</PageTitle>
 <button class="btn btn-primary" @onclick="this.CalcularSurebets">Calcular Surebet</button>
-<table class="table" style="width: 100%" >
+<table class="table" style="width: 100%">
     <thead>
         <tr>
             <th scope="col">Casa de aposta</th>
@@ -16,28 +16,28 @@
         </tr>
     </thead>
     <tbody>
-    @foreach(Surebet2Casas surebet2Casas in this.surebets2Casas)
-    {        
+        @foreach (Surebet2Casas surebet2Casas in this.surebets2Casas)
+        {
             <tr>
                 <td>@surebet2Casas.PartidaDaCasa1.NomeDaCasaDeAposta - @surebet2Casas.PartidaDaCasa2.NomeDaCasaDeAposta</td>
                 <td>@surebet2Casas.PartidaDaCasa1.Liga</td>
                 <td>@surebet2Casas.PartidaDaCasa1.NomeTimeDaCasa x @surebet2Casas.PartidaDaCasa1.NomeTimeVisitante</td>
                 <td>@surebet2Casas.Data</td>
                 <td>@Math.Round(surebet2Casas.Lucro, 2) %</td>
-                <td><a href="@surebet2Casas.PartidaDaCasa1.LinkDaPartida">Link1</a> | <a href="@surebet2Casas.PartidaDaCasa2.LinkDaPartida">Link2</a> </td> 
+                <td><a href="@surebet2Casas.PartidaDaCasa1.LinkDaPartida">Link1</a> | <a href="@surebet2Casas.PartidaDaCasa2.LinkDaPartida">Link2</a> </td>
             </tr>
-    }
-    @foreach(Surebet3Casas surebet3Casas in this.surebets3Casas)
-    {        
+        }
+        @foreach (Surebet3Casas surebet3Casas in this.surebets3Casas)
+        {
             <tr>
                 <td>@surebet3Casas.PartidaDaCasa1.NomeDaCasaDeAposta - @surebet3Casas.PartidaDaCasa2.NomeDaCasaDeAposta - @surebet3Casas.PartidaDaCasa3.NomeDaCasaDeAposta</td>
                 <td>@surebet3Casas.PartidaDaCasa1.Liga</td>
                 <td>@surebet3Casas.PartidaDaCasa1.NomeTimeDaCasa x @surebet3Casas.PartidaDaCasa1.NomeTimeVisitante</td>
                 <td>@surebet3Casas.Data</td>
                 <td>@Math.Round(surebet3Casas.Lucro, 2) %</td>
-                <td><a href="@surebet3Casas.PartidaDaCasa1.LinkDaPartida">Link1</a> | <a href="@surebet3Casas.PartidaDaCasa2.LinkDaPartida">Link2</a> | <a href="@surebet3Casas.PartidaDaCasa3.LinkDaPartida">Link3</a> </td> 
+                <td><a href="@surebet3Casas.PartidaDaCasa1.LinkDaPartida">Link1</a> | <a href="@surebet3Casas.PartidaDaCasa2.LinkDaPartida">Link2</a> | <a href="@surebet3Casas.PartidaDaCasa3.LinkDaPartida">Link3</a> </td>
             </tr>
-    }
+        }
     </tbody>
 </table>
 
@@ -46,25 +46,27 @@
     private List<Surebet2Casas> surebets2Casas = new();
     private List<Surebet3Casas> surebets3Casas = new();
     protected override void OnInitialized()
-    {        
+    {
         this.partidas = context.Partidas.ToList();
         this.surebets2Casas = context.Surebet2Casas.ToList();
         this.surebets3Casas = context.Surebet3Casas.ToList();
     }
 
-    public void CalcularSurebets(){
+    public void CalcularSurebets()
+    {
         Console.WriteLine("Calculando surebets");
         toastService.ShowInfo("Calculando surebets");
         var partidasAgrupadas = this.partidas.GroupBy(p => p.NomeDaCasaDeAposta);
         int i = 0, j = 0, l = 0;
         context.Surebet2Casas.RemoveRange(context.Surebet2Casas);
-        context.Surebet3Casas.RemoveRange(context.Surebet3Casas);        
+        context.Surebet3Casas.RemoveRange(context.Surebet3Casas);
         foreach (var partidaAgrupada1 in partidasAgrupadas)
-        {            
+        {
             foreach (var partidaAgrupada2 in partidasAgrupadas)
             {
                 @* Console.WriteLine($"{i} - {j}"); *@
-                if (i >= j) {
+                if (i >= j)
+                {
                     j++;
                     continue;
                 }
@@ -74,7 +76,8 @@
                 this.SepararPartidasValidasDe2CasasDeAposta(partidas1, partidas2);
                 foreach (var partidaAgrupada3 in partidasAgrupadas)
                 {
-                    if (j >= l || i >= l) {
+                    if (j >= l || i >= l)
+                    {
                         l++;
                         continue;
                     }
@@ -88,6 +91,7 @@
         context.SaveChanges();
         toastService.ShowInfo("Terminou de calcular surebets");
         Console.WriteLine("Terminou de calcular surebets");
+        Console.WriteLine($"{surebets2Casas.Count} / {surebets3Casas.Count}");
     }
 
     public void SepararPartidasValidasDe2CasasDeAposta(List<Partida> partidas1, List<Partida> partidas2)
@@ -100,14 +104,14 @@
                 bool validacaoNomeDoTimeDaVisitante = validarNomeDoTime(partida1.NomeTimeVisitante, partida2.NomeTimeVisitante);
                 bool validacaoDataDoJogo = partida1.Data == partida2.Data;
                 bool validacaoDaLiga = partida1.Liga == partida2.Liga;
-                
+
                 if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante) continue;
                 double odd1 = CalcularOdd2Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_VitoriaOuEmpate_TimeVisitante);
                 double odd2 = CalcularOdd2Casas(partida1.ODD_VitoriaOuEmpate_TimeCasa, partida2.ODD_Vitoria_TimeVisitante);
                 double odd3 = CalcularOdd2Casas(partida1.ODD_VitoriaOuEmpate_TimeVisitante, partida2.ODD_Vitoria_TimeDaCasa);
                 double odd4 = CalcularOdd2Casas(partida1.ODD_Vitoria_TimeVisitante, partida2.ODD_VitoriaOuEmpate_TimeCasa);
-                double lucro = new List<double>() {odd1, odd2, odd3, odd4 }.Max();
-                if(lucro <= 0) continue;
+                double lucro = new List<double>() { odd1, odd2, odd3, odd4 }.Max();
+                if (lucro <= 0) continue;
                 context.Surebet2Casas.Add(new()
                     {
                         PartidaDaCasa1 = partida1,
@@ -120,7 +124,7 @@
                         Lucro = lucro
                     });
             }
-        }        
+        }
     }
 
     public void SepararPartidasValidasDe3CasasDeAposta(List<Partida> partidas1, List<Partida> partidas2, List<Partida> partidas3)
@@ -135,7 +139,8 @@
                 bool validacaoDaLiga = partida1.Liga == partida2.Liga;
                 if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante) continue;
 
-                foreach(Partida partida3 in partidas3){
+                foreach (Partida partida3 in partidas3)
+                {
                     validacaoNomeDoTimeDaCasa = validarNomeDoTime(partida1.NomeTimeDaCasa, partida3.NomeTimeDaCasa);
                     validacaoNomeDoTimeDaVisitante = validarNomeDoTime(partida1.NomeTimeVisitante, partida3.NomeTimeVisitante);
                     validacaoDataDoJogo = partida1.Data == partida3.Data;
@@ -147,8 +152,8 @@
                     double odd4 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeVisitante, partida2.ODD_Empate_Ambos, partida3.ODD_Vitoria_TimeDaCasa);
                     double odd5 = CalcularOdd3Casas(partida1.ODD_Empate_Ambos, partida2.ODD_Vitoria_TimeDaCasa, partida3.ODD_Vitoria_TimeVisitante);
                     double odd6 = CalcularOdd3Casas(partida1.ODD_Empate_Ambos, partida2.ODD_Vitoria_TimeVisitante, partida3.ODD_Vitoria_TimeDaCasa);
-                    double lucro = new List<double>() {odd1, odd2, odd3, odd4, odd5, odd6}.Max();
-                    if(lucro <= 0) continue;
+                    double lucro = new List<double>() { odd1, odd2, odd3, odd4, odd5, odd6 }.Max();
+                    if (lucro <= 0) continue;
                     context.Surebet3Casas.Add(new()
                         {
                             PartidaDaCasa1 = partida1,
@@ -180,7 +185,8 @@
         return 100 - (100 / odd1 + 100 / odd2);
     }
 
-    double CalcularOdd3Casas(double odd1, double odd2, double odd3){
+    double CalcularOdd3Casas(double odd1, double odd2, double odd3)
+    {
         if (odd1 == 0 || odd2 == 0 || odd3 == 0) return 0;
         return 100 - (100 / odd1 + 100 / odd2 + 100 / odd3);
     }

@@ -70,6 +70,7 @@
     private static bool AbrirNavegador = CasaDeAposta.AbrirNavegador;
     protected override void OnInitialized()
     {
+        Console.WriteLine(CasaDeAposta.CasasDeAposta.Count);
         this.links = context.LinkDaLiga.Include(l => l.Liga).ToList();
     }
 
@@ -94,18 +95,13 @@
         List<Task> tarefas = new();
         foreach (CasaDeAposta casa in CasaDeAposta.CasasDeAposta)
         {
-            var _links = links.Where(lk => lk.CasaDeAposta == casa.NomeDoSite).Select(lk => new { Link = lk.Link, Liga = lk.Liga.Nome }).ToList();
-            //tarefas.Add(Task.Run(async () => {
-            foreach (var lk in _links)
+            tarefas.Add(Task.Run(async () =>
             {
-                string robo = $"{casa.NomeDoSite} - {lk.Liga}";
-                RobosEmExecucoes.Add(robo);
-                casa.LigaEmExecucao = lk.Liga;
-                await casa.RodarPadraoAsync(lk.Link);
-                RobosEmExecucoes.Remove(robo);
-            }
-            //}));
+                //RobosEmExecucoes.Add(robo);
+                await casa.RodarPadraoAsync();
+                //RobosEmExecucoes.Remove(robo);
+            }));
         }
-        //await Task.WhenAll(tarefas);
+        await Task.WhenAll(tarefas);
     }
 }

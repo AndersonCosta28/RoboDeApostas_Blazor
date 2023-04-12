@@ -1,7 +1,6 @@
 global using Microsoft.Playwright;
 global using System.Globalization;
 global using System.Text.Encodings.Web;
-global using System.Data.Entity.Core;
 global using Microsoft.EntityFrameworkCore;
 global using HtmlAgilityPack;
 global using RoboDeApostas.Utils;
@@ -62,11 +61,14 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+await new Betano().SalvarEmJsonAsync();
+await new SportingBet().SalvarEmJsonAsync();
+await new Betway().SalvarEmJsonAsync();
 //RoboDeApostas.InicializadorDeValores.Liga();
 //RoboDeApostas.InicializadorDeValores.Betano();
 //RoboDeApostas.InicializadorDeValores.SportingBet();
 //RoboDeApostas.InicializadorDeValores.Betway();
-//RoboDeApostas.InicializadorDeValores.Bet365();
-//RoboDeApostas.InicializadorDeValores.SportsBetIo();
-//RoboDeApostas.InicializadorDeValores.Betfair();
+RoboDeApostas.InicializadorDeValores.Bet365();
+RoboDeApostas.InicializadorDeValores.SportsBetIo();
+RoboDeApostas.InicializadorDeValores.Betfair();
 app.Run();

@@ -4,7 +4,7 @@
 //
 //    using RoboDeApostas.Models.CasasDeAposta.BetanoAPI.ListaDePartida;
 //
-//    var responseListaDePartida = ListaDePartida.FromJson(jsonString);
+//    var responseListaDePartida = ListaDePartida.FromJsonList(jsonString);
 #nullable enable
 #pragma warning disable CS8618
 #pragma warning disable CS8601
@@ -51,7 +51,9 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.ListaDePartida
 
     public partial class ResponseListaDePartida
     {
-        public static List<ResponseListaDePartida> FromJson(string json) => JsonSerializer.Deserialize<List<ResponseListaDePartida>>(json, RoboDeApostas.Models.CasasDeAposta.BetanoAPI.ListaDePartida.Converter.Settings);
+        public static List<ResponseListaDePartida> FromJsonList(string json) => JsonSerializer.Deserialize<List<ResponseListaDePartida>>(json, RoboDeApostas.Models.CasasDeAposta.BetanoAPI.ListaDePartida.Converter.Settings);
+        public static ResponseListaDePartida FromJson(string json) => JsonSerializer.Deserialize<ResponseListaDePartida>(json, RoboDeApostas.Models.CasasDeAposta.BetanoAPI.ListaDePartida.Converter.Settings);
+
     }
 
     public static class Serialize

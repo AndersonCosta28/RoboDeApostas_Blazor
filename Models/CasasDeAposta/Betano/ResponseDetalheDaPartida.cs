@@ -4,7 +4,7 @@
 //
 //    using RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida;
 //
-//    var responseDetalheDaPartida = DetalheDaPartida.FromJson(jsonString);
+//    var responseDetalheDaPartida = DetalheDaPartida.FromJsonList(jsonString);
 
 namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
 {
@@ -20,14 +20,14 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
         public ResponseDetalheDaPartidaData Data { get; set; }
 
-        [JsonProperty("structureComponents", NullValueHandling = NullValueHandling.Ignore)]
-        public StructureComponents StructureComponents { get; set; }
+        //[JsonProperty("structureComponents", NullValueHandling = NullValueHandling.Ignore)]
+        //public StructureComponents StructureComponents { get; set; }
 
-        [JsonProperty("user", NullValueHandling = NullValueHandling.Ignore)]
-        public User User { get; set; }
+        //[JsonProperty("user", NullValueHandling = NullValueHandling.Ignore)]
+        //public User User { get; set; }
 
-        [JsonProperty("companyId", NullValueHandling = NullValueHandling.Ignore)]
-        public long? CompanyId { get; set; }
+        //[JsonProperty("companyId", NullValueHandling = NullValueHandling.Ignore)]
+        //public long? CompanyId { get; set; }
     }
 
     public partial class ResponseDetalheDaPartidaData
@@ -35,20 +35,20 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         [JsonProperty("event", NullValueHandling = NullValueHandling.Ignore)]
         public DataEvent Event { get; set; }
 
-        [JsonProperty("hasStarted", NullValueHandling = NullValueHandling.Ignore)]
-        public bool? HasStarted { get; set; }
+        //[JsonProperty("hasStarted", NullValueHandling = NullValueHandling.Ignore)]
+        //public bool? HasStarted { get; set; }
 
-        [JsonProperty("breadcrumb", NullValueHandling = NullValueHandling.Ignore)]
-        public List<Breadcrumb> Breadcrumb { get; set; }
+        //[JsonProperty("breadcrumb", NullValueHandling = NullValueHandling.Ignore)]
+        //public List<Breadcrumb> Breadcrumb { get; set; }
 
-        [JsonProperty("metaData", NullValueHandling = NullValueHandling.Ignore)]
-        public MetaData MetaData { get; set; }
+        //[JsonProperty("metaData", NullValueHandling = NullValueHandling.Ignore)]
+        //public MetaData MetaData { get; set; }
     }
 
     public partial class Breadcrumb
     {
-        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-        public string Name { get; set; }
+        //[JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
+        //public string Name { get; set; }
 
         [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; set; }
@@ -77,8 +77,8 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         // [JsonProperty("betRadarId", NullValueHandling = NullValueHandling.Ignore)]
         // public long? BetRadarId { get; set; }
 
-        [JsonProperty("notes", NullValueHandling = NullValueHandling.Ignore)]
-        public string Notes { get; set; }
+        //[JsonProperty("notes", NullValueHandling = NullValueHandling.Ignore)]
+        //public string Notes { get; set; }
 
         [JsonProperty("tvChannel", NullValueHandling = NullValueHandling.Ignore)]
         public string TvChannel { get; set; }
@@ -121,8 +121,8 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         [JsonProperty("selectionsVisible", NullValueHandling = NullValueHandling.Ignore)]
         public bool? SelectionsVisible { get; set; }
 
-        [JsonProperty("liveData", NullValueHandling = NullValueHandling.Ignore)]
-        public PurpleLiveData LiveData { get; set; }
+        //[JsonProperty("liveData", NullValueHandling = NullValueHandling.Ignore)]
+        //public PurpleLiveData LiveData { get; set; }
 
         [JsonProperty("chatChannelId", NullValueHandling = NullValueHandling.Ignore)]
         public string ChatChannelId { get; set; }
@@ -131,8 +131,8 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         // [JsonConverter(typeof(ParseStringConverter))]
         // public long? Id { get; set; }
 
-        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-        public string Name { get; set; }
+        //[JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
+        //public string Name { get; set; }
 
         [JsonProperty("liveNow", NullValueHandling = NullValueHandling.Ignore)]
         public bool? LiveNow { get; set; }
@@ -165,20 +165,20 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         public string Type { get; set; }
     }
 
-    public partial class PurpleLiveData
-    {
-        [JsonProperty("score", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Score { get; set; }
+    //public partial class PurpleLiveData
+    //{
+    //    [JsonProperty("score", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Score { get; set; }
 
-        [JsonProperty("clock", NullValueHandling = NullValueHandling.Ignore)]
-        public PurpleClock Clock { get; set; }
+    //    [JsonProperty("clock", NullValueHandling = NullValueHandling.Ignore)]
+    //    public PurpleClock Clock { get; set; }
 
-        [JsonProperty("results", NullValueHandling = NullValueHandling.Ignore)]
-        public PurpleResults Results { get; set; }
+    //    [JsonProperty("results", NullValueHandling = NullValueHandling.Ignore)]
+    //    public PurpleResults Results { get; set; }
 
-        [JsonProperty("periodDescription", NullValueHandling = NullValueHandling.Ignore)]
-        public string PeriodDescription { get; set; }
-    }
+    //    [JsonProperty("periodDescription", NullValueHandling = NullValueHandling.Ignore)]
+    //    public string PeriodDescription { get; set; }
+    //}
 
     public partial class PurpleClock
     {
@@ -186,53 +186,53 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         public long? SecondsSinceStart { get; set; }
     }
 
-    public partial class PurpleResults
-    {
-        [JsonProperty("goal", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Goal { get; set; }
+    //public partial class PurpleResults
+    //{
+    //    [JsonProperty("goal", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Goal { get; set; }
 
-        [JsonProperty("expectedGoal", NullValueHandling = NullValueHandling.Ignore)]
-        public Score ExpectedGoal { get; set; }
+    //    [JsonProperty("expectedGoal", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score ExpectedGoal { get; set; }
 
-        [JsonProperty("standardTimeScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score StandardTimeScore { get; set; }
+    //    [JsonProperty("standardTimeScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score StandardTimeScore { get; set; }
 
-        [JsonProperty("extraTimeScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score ExtraTimeScore { get; set; }
+    //    [JsonProperty("extraTimeScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score ExtraTimeScore { get; set; }
 
-        [JsonProperty("shootoutScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score ShootoutScore { get; set; }
+    //    [JsonProperty("shootoutScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score ShootoutScore { get; set; }
 
-        [JsonProperty("penaltyShootout", NullValueHandling = NullValueHandling.Ignore)]
-        public PenaltyShootout PenaltyShootout { get; set; }
+    //    [JsonProperty("penaltyShootout", NullValueHandling = NullValueHandling.Ignore)]
+    //    public PenaltyShootout PenaltyShootout { get; set; }
 
-        [JsonProperty("penalties", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Penalties { get; set; }
+    //    [JsonProperty("penalties", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Penalties { get; set; }
 
-        [JsonProperty("yellow", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Yellow { get; set; }
+    //    [JsonProperty("yellow", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Yellow { get; set; }
 
-        [JsonProperty("corners", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Corners { get; set; }
+    //    [JsonProperty("corners", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Corners { get; set; }
 
-        [JsonProperty("shots", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Shots { get; set; }
+    //    [JsonProperty("shots", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Shots { get; set; }
 
-        [JsonProperty("scorers", NullValueHandling = NullValueHandling.Ignore)]
-        public List<Scorer> Scorers { get; set; }
+    //    [JsonProperty("scorers", NullValueHandling = NullValueHandling.Ignore)]
+    //    public List<Scorer> Scorers { get; set; }
 
-        [JsonProperty("injuryTime", NullValueHandling = NullValueHandling.Ignore)]
-        public long? InjuryTime { get; set; }
-    }
+    //    [JsonProperty("injuryTime", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? InjuryTime { get; set; }
+    //}
 
-    public partial class Score
-    {
-        [JsonProperty("home", NullValueHandling = NullValueHandling.Ignore)]
-        public AwayUnion? Home { get; set; }
+    //public partial class Score
+    //{
+    //    [JsonProperty("home", NullValueHandling = NullValueHandling.Ignore)]
+    //    public AwayUnion? Home { get; set; }
 
-        [JsonProperty("away", NullValueHandling = NullValueHandling.Ignore)]
-        public AwayUnion? Away { get; set; }
-    }
+    //    [JsonProperty("away", NullValueHandling = NullValueHandling.Ignore)]
+    //    public AwayUnion? Away { get; set; }
+    //}
 
     public partial class PenaltyShootout
     {
@@ -393,8 +393,8 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         // [JsonProperty("betRadarId", NullValueHandling = NullValueHandling.Ignore)]
         // public long? BetRadarId { get; set; }
 
-        [JsonProperty("notes", NullValueHandling = NullValueHandling.Ignore)]
-        public Notes? Notes { get; set; }
+        //[JsonProperty("notes", NullValueHandling = NullValueHandling.Ignore)]
+        //public Notes? Notes { get; set; }
 
         [JsonProperty("tvChannel", NullValueHandling = NullValueHandling.Ignore)]
         public string TvChannel { get; set; }
@@ -425,8 +425,8 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         [JsonProperty("availableStatTypes", NullValueHandling = NullValueHandling.Ignore)]
         public List<long> AvailableStatTypes { get; set; }
 
-        [JsonProperty("liveData", NullValueHandling = NullValueHandling.Ignore)]
-        public FluffyLiveData LiveData { get; set; }
+        //[JsonProperty("liveData", NullValueHandling = NullValueHandling.Ignore)]
+        //public FluffyLiveData LiveData { get; set; }
 
         // [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         // [JsonConverter(typeof(ParseStringConverter))]
@@ -457,20 +457,20 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         public bool? StreamingAvailable { get; set; }
     }
 
-    public partial class FluffyLiveData
-    {
-        [JsonProperty("score", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Score { get; set; }
+    //public partial class FluffyLiveData
+    //{
+    //    [JsonProperty("score", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Score { get; set; }
 
-        [JsonProperty("clock", NullValueHandling = NullValueHandling.Ignore)]
-        public FluffyClock Clock { get; set; }
+    //    [JsonProperty("clock", NullValueHandling = NullValueHandling.Ignore)]
+    //    public FluffyClock Clock { get; set; }
 
-        [JsonProperty("results", NullValueHandling = NullValueHandling.Ignore)]
-        public FluffyResults Results { get; set; }
+    //    [JsonProperty("results", NullValueHandling = NullValueHandling.Ignore)]
+    //    public FluffyResults Results { get; set; }
 
-        [JsonProperty("periodDescription", NullValueHandling = NullValueHandling.Ignore)]
-        public string PeriodDescription { get; set; }
-    }
+    //    [JsonProperty("periodDescription", NullValueHandling = NullValueHandling.Ignore)]
+    //    public string PeriodDescription { get; set; }
+    //}
 
     public partial class FluffyClock
     {
@@ -481,150 +481,150 @@ namespace RoboDeApostas.Models.CasasDeAposta.BetanoAPI.DetalheDaPartida
         public bool? ClockStopped { get; set; }
     }
 
-    public partial class FluffyResults
-    {
-        [JsonProperty("goal", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Goal { get; set; }
+    //public partial class FluffyResults
+    //{
+    //    [JsonProperty("goal", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Goal { get; set; }
 
-        [JsonProperty("standardTimeScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score StandardTimeScore { get; set; }
+    //    [JsonProperty("standardTimeScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score StandardTimeScore { get; set; }
 
-        [JsonProperty("extraTimeScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score ExtraTimeScore { get; set; }
+    //    [JsonProperty("extraTimeScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score ExtraTimeScore { get; set; }
 
-        [JsonProperty("shootoutScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score ShootoutScore { get; set; }
+    //    [JsonProperty("shootoutScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score ShootoutScore { get; set; }
 
-        [JsonProperty("penaltyShootout", NullValueHandling = NullValueHandling.Ignore)]
-        public PenaltyShootout PenaltyShootout { get; set; }
+    //    [JsonProperty("penaltyShootout", NullValueHandling = NullValueHandling.Ignore)]
+    //    public PenaltyShootout PenaltyShootout { get; set; }
 
-        [JsonProperty("penalties", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Penalties { get; set; }
+    //    [JsonProperty("penalties", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Penalties { get; set; }
 
-        [JsonProperty("yellow", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Yellow { get; set; }
+    //    [JsonProperty("yellow", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Yellow { get; set; }
 
-        [JsonProperty("corners", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Corners { get; set; }
+    //    [JsonProperty("corners", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Corners { get; set; }
 
-        [JsonProperty("injuryTime", NullValueHandling = NullValueHandling.Ignore)]
-        public long? InjuryTime { get; set; }
+    //    [JsonProperty("injuryTime", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? InjuryTime { get; set; }
 
-        [JsonProperty("shots", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Shots { get; set; }
+    //    [JsonProperty("shots", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Shots { get; set; }
 
-        [JsonProperty("scorers", NullValueHandling = NullValueHandling.Ignore)]
-        public List<Scorer> Scorers { get; set; }
+    //    [JsonProperty("scorers", NullValueHandling = NullValueHandling.Ignore)]
+    //    public List<Scorer> Scorers { get; set; }
 
-        [JsonProperty("red", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Red { get; set; }
+    //    [JsonProperty("red", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Red { get; set; }
 
-        [JsonProperty("regularPeriods", NullValueHandling = NullValueHandling.Ignore)]
-        public long? RegularPeriods { get; set; }
+    //    [JsonProperty("regularPeriods", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? RegularPeriods { get; set; }
 
-        [JsonProperty("currentPeriod", NullValueHandling = NullValueHandling.Ignore)]
-        public long? CurrentPeriod { get; set; }
+    //    [JsonProperty("currentPeriod", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? CurrentPeriod { get; set; }
 
-        [JsonProperty("firstPeriodScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score FirstPeriodScore { get; set; }
+    //    [JsonProperty("firstPeriodScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score FirstPeriodScore { get; set; }
 
-        [JsonProperty("secondPeriodScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score SecondPeriodScore { get; set; }
+    //    [JsonProperty("secondPeriodScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score SecondPeriodScore { get; set; }
 
-        [JsonProperty("halfTimeScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score HalfTimeScore { get; set; }
+    //    [JsonProperty("halfTimeScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score HalfTimeScore { get; set; }
 
-        [JsonProperty("fullTimeScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score FullTimeScore { get; set; }
+    //    [JsonProperty("fullTimeScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score FullTimeScore { get; set; }
 
-        [JsonProperty("extraPeriodScores", NullValueHandling = NullValueHandling.Ignore)]
-        public List<object> ExtraPeriodScores { get; set; }
+    //    [JsonProperty("extraPeriodScores", NullValueHandling = NullValueHandling.Ignore)]
+    //    public List<object> ExtraPeriodScores { get; set; }
 
-        [JsonProperty("maxSetsToPlay", NullValueHandling = NullValueHandling.Ignore)]
-        public long? MaxSetsToPlay { get; set; }
+    //    [JsonProperty("maxSetsToPlay", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? MaxSetsToPlay { get; set; }
 
-        [JsonProperty("homeSetsScore", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> HomeSetsScore { get; set; }
+    //    [JsonProperty("homeSetsScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public List<string> HomeSetsScore { get; set; }
 
-        [JsonProperty("awaySetsScore", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> AwaySetsScore { get; set; }
+    //    [JsonProperty("awaySetsScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public List<string> AwaySetsScore { get; set; }
 
-        [JsonProperty("serverHome", NullValueHandling = NullValueHandling.Ignore)]
-        public bool? ServerHome { get; set; }
+    //    [JsonProperty("serverHome", NullValueHandling = NullValueHandling.Ignore)]
+    //    public bool? ServerHome { get; set; }
 
-        [JsonProperty("currentScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score CurrentScore { get; set; }
+    //    [JsonProperty("currentScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score CurrentScore { get; set; }
 
-        [JsonProperty("currentSetNumber", NullValueHandling = NullValueHandling.Ignore)]
-        public long? CurrentSetNumber { get; set; }
+    //    [JsonProperty("currentSetNumber", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? CurrentSetNumber { get; set; }
 
-        [JsonProperty("currentGame", NullValueHandling = NullValueHandling.Ignore)]
-        public long? CurrentGame { get; set; }
+    //    [JsonProperty("currentGame", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? CurrentGame { get; set; }
 
-        [JsonProperty("totalHomeGamesWon", NullValueHandling = NullValueHandling.Ignore)]
-        public long? TotalHomeGamesWon { get; set; }
+    //    [JsonProperty("totalHomeGamesWon", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? TotalHomeGamesWon { get; set; }
 
-        [JsonProperty("totalAwayGamesWon", NullValueHandling = NullValueHandling.Ignore)]
-        public long? TotalAwayGamesWon { get; set; }
+    //    [JsonProperty("totalAwayGamesWon", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? TotalAwayGamesWon { get; set; }
 
-        [JsonProperty("currentSetHomeGamesWon", NullValueHandling = NullValueHandling.Ignore)]
-        public long? CurrentSetHomeGamesWon { get; set; }
+    //    [JsonProperty("currentSetHomeGamesWon", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? CurrentSetHomeGamesWon { get; set; }
 
-        [JsonProperty("currentSetAwayGamesWon", NullValueHandling = NullValueHandling.Ignore)]
-        public long? CurrentSetAwayGamesWon { get; set; }
+    //    [JsonProperty("currentSetAwayGamesWon", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? CurrentSetAwayGamesWon { get; set; }
 
-        [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long? Status { get; set; }
+    //    [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
+    //    [JsonConverter(typeof(ParseStringConverter))]
+    //    public long? Status { get; set; }
 
-        [JsonProperty("serverAway", NullValueHandling = NullValueHandling.Ignore)]
-        public bool? ServerAway { get; set; }
+    //    [JsonProperty("serverAway", NullValueHandling = NullValueHandling.Ignore)]
+    //    public bool? ServerAway { get; set; }
 
-        [JsonProperty("homeSetsWon", NullValueHandling = NullValueHandling.Ignore)]
-        public long? HomeSetsWon { get; set; }
+    //    [JsonProperty("homeSetsWon", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? HomeSetsWon { get; set; }
 
-        [JsonProperty("awaySetsWon", NullValueHandling = NullValueHandling.Ignore)]
-        public long? AwaySetsWon { get; set; }
+    //    [JsonProperty("awaySetsWon", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? AwaySetsWon { get; set; }
 
-        [JsonProperty("totalHomePoints", NullValueHandling = NullValueHandling.Ignore)]
-        public long? TotalHomePoints { get; set; }
+    //    [JsonProperty("totalHomePoints", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? TotalHomePoints { get; set; }
 
-        [JsonProperty("totalAwayPoints", NullValueHandling = NullValueHandling.Ignore)]
-        public long? TotalAwayPoints { get; set; }
+    //    [JsonProperty("totalAwayPoints", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? TotalAwayPoints { get; set; }
 
-        [JsonProperty("periodScores", NullValueHandling = NullValueHandling.Ignore)]
-        public List<Score> PeriodScores { get; set; }
+    //    [JsonProperty("periodScores", NullValueHandling = NullValueHandling.Ignore)]
+    //    public List<Score> PeriodScores { get; set; }
 
-        [JsonProperty("clockHidden", NullValueHandling = NullValueHandling.Ignore)]
-        public bool? ClockHidden { get; set; }
+    //    [JsonProperty("clockHidden", NullValueHandling = NullValueHandling.Ignore)]
+    //    public bool? ClockHidden { get; set; }
 
-        [JsonProperty("bases", NullValueHandling = NullValueHandling.Ignore)]
-        public List<bool> Bases { get; set; }
+    //    [JsonProperty("bases", NullValueHandling = NullValueHandling.Ignore)]
+    //    public List<bool> Bases { get; set; }
 
-        [JsonProperty("balls", NullValueHandling = NullValueHandling.Ignore)]
-        public long? Balls { get; set; }
+    //    [JsonProperty("balls", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? Balls { get; set; }
 
-        [JsonProperty("strikes", NullValueHandling = NullValueHandling.Ignore)]
-        public long? Strikes { get; set; }
+    //    [JsonProperty("strikes", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? Strikes { get; set; }
 
-        [JsonProperty("runners", NullValueHandling = NullValueHandling.Ignore)]
-        public string Runners { get; set; }
+    //    [JsonProperty("runners", NullValueHandling = NullValueHandling.Ignore)]
+    //    public string Runners { get; set; }
 
-        [JsonProperty("outs", NullValueHandling = NullValueHandling.Ignore)]
-        public long? Outs { get; set; }
+    //    [JsonProperty("outs", NullValueHandling = NullValueHandling.Ignore)]
+    //    public long? Outs { get; set; }
 
-        [JsonProperty("innings", NullValueHandling = NullValueHandling.Ignore)]
-        public List<Score> Innings { get; set; }
+    //    [JsonProperty("innings", NullValueHandling = NullValueHandling.Ignore)]
+    //    public List<Score> Innings { get; set; }
 
-        [JsonProperty("act", NullValueHandling = NullValueHandling.Ignore)]
-        public Score Act { get; set; }
+    //    [JsonProperty("act", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score Act { get; set; }
 
-        [JsonProperty("firstHalfScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score FirstHalfScore { get; set; }
+    //    [JsonProperty("firstHalfScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score FirstHalfScore { get; set; }
 
-        [JsonProperty("secondHalfScore", NullValueHandling = NullValueHandling.Ignore)]
-        public Score SecondHalfScore { get; set; }
-    }
+    //    [JsonProperty("secondHalfScore", NullValueHandling = NullValueHandling.Ignore)]
+    //    public Score SecondHalfScore { get; set; }
+    //}
 
     public partial class FluffyMarket
     {

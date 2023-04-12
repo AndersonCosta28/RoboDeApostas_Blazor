@@ -117,7 +117,35 @@ namespace RoboDeApostas.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTimeOffset>("Data")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Lucro")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("PartidaDaCasa1Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PartidaDaCasa2Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Prob1")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Prob2")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Prob3")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Prob4")
+                        .HasColumnType("REAL");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PartidaDaCasa1Id");
+
+                    b.HasIndex("PartidaDaCasa2Id");
 
                     b.ToTable("Surebet2Casas");
                 });
@@ -128,7 +156,46 @@ namespace RoboDeApostas.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTimeOffset>("Data")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Lucro")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("PartidaDaCasa1Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PartidaDaCasa2Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PartidaDaCasa3Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Prob1")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Prob2")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Prob3")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Prob4")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Prob5")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Prob6")
+                        .HasColumnType("REAL");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PartidaDaCasa1Id");
+
+                    b.HasIndex("PartidaDaCasa2Id");
+
+                    b.HasIndex("PartidaDaCasa3Id");
 
                     b.ToTable("Surebet3Casas");
                 });
@@ -142,6 +209,52 @@ namespace RoboDeApostas.Migrations
                         .IsRequired();
 
                     b.Navigation("Liga");
+                });
+
+            modelBuilder.Entity("RoboDeApostas.Models.Surebet2Casas", b =>
+                {
+                    b.HasOne("RoboDeApostas.Models.Partida", "PartidaDaCasa1")
+                        .WithMany()
+                        .HasForeignKey("PartidaDaCasa1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RoboDeApostas.Models.Partida", "PartidaDaCasa2")
+                        .WithMany()
+                        .HasForeignKey("PartidaDaCasa2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PartidaDaCasa1");
+
+                    b.Navigation("PartidaDaCasa2");
+                });
+
+            modelBuilder.Entity("RoboDeApostas.Models.Surebet3Casas", b =>
+                {
+                    b.HasOne("RoboDeApostas.Models.Partida", "PartidaDaCasa1")
+                        .WithMany()
+                        .HasForeignKey("PartidaDaCasa1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RoboDeApostas.Models.Partida", "PartidaDaCasa2")
+                        .WithMany()
+                        .HasForeignKey("PartidaDaCasa2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RoboDeApostas.Models.Partida", "PartidaDaCasa3")
+                        .WithMany()
+                        .HasForeignKey("PartidaDaCasa3Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PartidaDaCasa1");
+
+                    b.Navigation("PartidaDaCasa2");
+
+                    b.Navigation("PartidaDaCasa3");
                 });
 #pragma warning restore 612, 618
         }

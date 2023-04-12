@@ -101,26 +101,30 @@ class Betway : CasaDeAposta
     {
         List<Task> tasks = new()
         {
-            Task.Run(async () => await this.Pagina.GotoAsync(link, new() { Timeout = 0 })),
+            Task.Run(async () => await Pagina.GotoAsync(link, new() { Timeout = 0 })),
             Task.Run(async () =>
             {
-                var resposta = await Pagina.WaitForResponseAsync(r => r.Url.Contains("https://betway.com/api/Events/v2/GetEvents"));
-                string json = await resposta.TextAsync();
-                var data = ResponseListaDePartida.FromJson(json);
-                foreach (var item in data.Events)
+                try
                 {
-                    if ((bool)item.IsLive! || item.Markets.Count == 0) continue;
-                    Partida partida = new($"{this.Link_PaginaInicial}/pt/sports/evt/{item.Id}", this.LigaEmExecucao, this.NomeDoSite);
-                    string[] dataCompleta = item.Date.Split('/');
-                    string[] horario = item.Time.Split(":");
-                    byte dia = byte.Parse(dataCompleta[1]), mes = byte.Parse(dataCompleta[0]);
-                    int ano = int.Parse(dataCompleta[2]);
-                    byte hora = byte.Parse(horario[0]), minuto = byte.Parse(horario[1]);
-                    partida.DataCompleta = Funcoes.ConverterFusoHorario(new(ano, mes, dia, hora, minuto, 0, TimeSpan.Zero));
-                    partida.NomeTimeDaCasa = item.HomeTeamName;
-                    partida.NomeTimeVisitante = item.AwayTeamName;
-                    this.ListaDePartidas.Add(partida);
+                    var resposta = await Pagina.WaitForResponseAsync(r => r.Url.Contains("https://betway.com/api/Events/v2/GetEvents"));
+                    string json = await resposta.TextAsync();
+                    var data = ResponseListaDePartida.FromJson(json);
+                    foreach (var item in data.Events)
+                    {
+                        if ((bool)item.IsLive! || item.Markets.Count == 0) continue;
+                        Partida partida = new($"{Link_PaginaInicial}/pt/sports/evt/{item.Id}", LigaEmExecucao, NomeDoSite);
+                        string[] dataCompleta = item.Date.Split('/');
+                        string[] horario = item.Time.Split(":");
+                        byte dia = byte.Parse(dataCompleta[1]), mes = byte.Parse(dataCompleta[0]);
+                        int ano = int.Parse(dataCompleta[2]);
+                        byte hora = byte.Parse(horario[0]), minuto = byte.Parse(horario[1]);
+                        partida.DataCompleta = Funcoes.ConverterFusoHorario(new(ano, mes, dia, hora, minuto, 0, TimeSpan.Zero));
+                        partida.NomeTimeDaCasa = item.HomeTeamName;
+                        partida.NomeTimeVisitante = item.AwayTeamName;
+                        ListaDePartidas.Add(partida);
+                    }
                 }
+                catch(Exception){ throw; }
             })
         };
         await Task.WhenAll(tasks);
@@ -129,45 +133,55 @@ class Betway : CasaDeAposta
 
     protected override async Task PreencherDetalhesDaPartida_RequestAsync(Partida partida)
     {
-        List<Task> tasks = new();
-        tasks.Add(Task.Run(async () => await this.Pagina.GotoAsync(partida.LinkDaPartida, new() { Timeout = 0 })));
-        tasks.Add(Task.Run(async () =>
+        List<Task> tasks = new()
         {
-            var resposta = await this.Pagina.WaitForResponseAsync("https://betway.com/api/Events/v2/GetEventDetails");
-            string json = await resposta.TextAsync();
-            var data = ResponseDetalheDaPartida.FromJson(json);
+            Task.Run(async () => await Pagina.GotoAsync(partida.LinkDaPartida, new() { Timeout = 0 })),
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var resposta = await Pagina.WaitForResponseAsync("https://betway.com/api/Events/v2/GetEventDetails");
+                    string json = await resposta.TextAsync();
+                    var data = ResponseDetalheDaPartida.FromJson(json);
 
-            partida.ODD_Vitoria_TimeDaCasa = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => this.Titulo_ResultadoFinal.Contains(m.Title)).Outcomes[0][0]).OddsDecimal! ?? 0;
-            partida.ODD_Empate_Ambos = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => this.Titulo_ResultadoFinal.Contains(m.Title)).Outcomes[0][1]).OddsDecimal! ?? 0;
-            partida.ODD_Vitoria_TimeVisitante = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => this.Titulo_ResultadoFinal.Contains(m.Title)).Outcomes[0][2]).OddsDecimal ?? 0;
-            partida.ODD_VitoriaOuEmpate_TimeCasa = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => this.Titulo_ChanceDupla.Contains(m.Title)).Outcomes[0][this.indice_VitoriaEmpateTimeDaCasa]).OddsDecimal ?? 0;
-            partida.ODD_VitoriaOuEmpate_TimeVisitante = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => this.Titulo_ChanceDupla.Contains(m.Title)).Outcomes[0][this.indice_VitoriaEmpateTimeVisitante]).OddsDecimal ?? 0;
-        }));
+                    partida.ODD_Vitoria_TimeDaCasa = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ResultadoFinal.Contains(m.Title)).Outcomes[0][0]).OddsDecimal! ?? 0;
+                    partida.ODD_Empate_Ambos = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ResultadoFinal.Contains(m.Title)).Outcomes[0][1]).OddsDecimal! ?? 0;
+                    partida.ODD_Vitoria_TimeVisitante = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ResultadoFinal.Contains(m.Title)).Outcomes[0][2]).OddsDecimal ?? 0;
+
+                    if (data.Markets.Find(m => Titulo_ChanceDupla.Contains(m.Title)) == null || data.Markets.Find(m => Titulo_ChanceDupla.Contains(m.Title)) == null ) return;
+                    partida.ODD_VitoriaOuEmpate_TimeCasa = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ChanceDupla.Contains(m.Title)).Outcomes[0][indice_VitoriaEmpateTimeDaCasa]).OddsDecimal ?? 0;
+                    partida.ODD_VitoriaOuEmpate_TimeVisitante = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ChanceDupla.Contains(m.Title)).Outcomes[0][indice_VitoriaEmpateTimeVisitante]).OddsDecimal ?? 0;
+                }
+                catch (Exception) { throw; }
+            })
+        };
         await Task.WhenAll(tasks);
     }
 
     public override async Task RodarPadraoAsync(string link)
     {
         var playwright = await Playwright.CreateAsync();
-        this.Navegador = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions() { Headless = !AbrirNavegador, Devtools = false });
-        this.Pagina = await this.Navegador.NewPageAsync(new BrowserNewPageOptions() { ExtraHTTPHeaders = this.ValoresParaInjetarNaPagina });
+        Navegador = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions() { Headless = !AbrirNavegador, Devtools = false });
+        Pagina = await Navegador.NewPageAsync(new BrowserNewPageOptions() { ExtraHTTPHeaders = ValoresParaInjetarNaPagina });
         try
         {
-            this.SalvarLog($"Executando Robo em {this.NomeDoSite} e na liga {LigaEmExecucao}");
-            this.ListaDePartidas.Clear();
-            await this.PreencherListaDePartidas(link);
-            foreach (Partida partida in this.ListaDePartidas)
+            RobosEmExecucao.Add(this);
+            SalvarLog($"Executando Robo em {NomeDoSite} e na liga {LigaEmExecucao}");
+            ListaDePartidas.Clear();
+            await PreencherListaDePartidas(link);
+            foreach (Partida partida in ListaDePartidas)
             {
-                await this.PreencherDetalhesDaPartida_RequestAsync(partida);
-                await this.SalvarPartidaNoBanco(partida);
+                await PreencherDetalhesDaPartida_RequestAsync(partida);
+                await SalvarPartidaNoBanco(partida);
             }
         }
         catch (Exception ex)
         {
-            this.SalvarLog($"Lançou erro no link: ${link} \n {ex.Message} \n {ex.InnerException.Message}");
+            SalvarLog($"Lançou erro no link: ${link} \n {ex.Message} \n {ex.InnerException.Message}");
         }
         finally
         {
+            RobosEmExecucao.Remove(this);
             await Pagina.CloseAsync();
             await Navegador.CloseAsync();
         }

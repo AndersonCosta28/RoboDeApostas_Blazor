@@ -72,6 +72,18 @@ public abstract class CasaDeAposta
     }
     protected abstract void Configurar();
 
+    public virtual async Task RodarPadraoAsync()
+    {
+        using var db = new DatabaseContext();
+        var link = db.LinkDaLiga.Where(lk => lk.CasaDeAposta == this.NomeDoSite).Select(lk => new { lk.Link, Liga = lk.Liga.Nome }).ToList();
+        foreach ( var lk in link )
+        {
+            this.LigaEmExecucao = lk.Liga;
+            await this.RodarPadraoAsync(lk.Link);
+        }
+    }
+
+
     public virtual async Task RodarPadraoAsync(string link)
     {
         //using var db = new DatabaseContext();
@@ -298,7 +310,7 @@ public abstract class CasaDeAposta
     public async Task SalvarEmJsonAsync()
     {
         using var db = new DatabaseContext();
-        var lista = db.Partidas.Where(p => p.NomeDaCasaDeAposta == NomeDoSite).OrderBy(p => p.DataCompleta).ToList();
+        var lista = db.Partidas.Where(p => p.NomeDaCasaDeAposta == NomeDoSite).ToList();
         string json = JsonSerializer.Serialize(lista, new JsonSerializerOptions
         {
             Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),

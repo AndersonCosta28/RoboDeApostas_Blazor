@@ -12,8 +12,8 @@ class Sportsbet_IO : CasaDeAposta
         byte mes;
         try
         {
-            await page.WaitForSelectorAsync(seletor, new());
-            var r = await page.Locator(seletor).AllInnerTextsAsync();
+            await Pagina.WaitForSelectorAsync(seletor, new());
+            var r = await Pagina.Locator(seletor).AllInnerTextsAsync();
             string[] data = r[0].Split(" ");
             dia = byte.Parse(data[0]);
             mes = Dicionarios.Meses[data[1].ToLower()];
@@ -23,7 +23,7 @@ class Sportsbet_IO : CasaDeAposta
         }
         catch (Exception)
         {
-            string r = await page.Locator(".BasicScoreboard__StyledBasicSportsMatchInfo-sc-pv94f8-1.byYQaP > p").InnerTextAsync();
+            string r = await Pagina.Locator(".BasicScoreboard__StyledBasicSportsMatchInfo-sc-pv94f8-1.byYQaP > p").InnerTextAsync();
             dia = byte.Parse(r.Split(" ")[0]);
             mes = Dicionarios.Meses[r.Split(" ")[1][..3].ToLower()];
         }
@@ -39,7 +39,7 @@ class Sportsbet_IO : CasaDeAposta
 
     protected override async Task AtribuirNomeDosTimesAsync(Partida jogo)
     {
-        string tituloDaPagina = await page.TitleAsync();
+        string tituloDaPagina = await Pagina.TitleAsync();
         Regex regex = new(@"(?<=Odds de aposta do )(.*?)(?= - Sportsbet.io)");
         MatchCollection resultado = regex.Matches(tituloDaPagina);
         string[] nomeDosTimes = resultado[0].Value.Split(" - ");

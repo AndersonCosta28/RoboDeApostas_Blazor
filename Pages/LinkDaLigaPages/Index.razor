@@ -35,7 +35,7 @@
             <tr>
                 <td>@link.CasaDeAposta</td>
                 <td>@link.Liga.Nome</td>
-                <td>@link.Link</td>
+                <td><a href="@link.Link" target="_blank">@link.Link</a></td>
                 <td><button class="btn btn-secondary" @onclick="() => this.NavegarParaATelaDeEdicao(id)">Editar</button></td>
                 <td><button class="btn btn-danger" @onclick="() => this.NavegarParaATelaDeExclusao(id)">Deletar</button></td>
             </tr>

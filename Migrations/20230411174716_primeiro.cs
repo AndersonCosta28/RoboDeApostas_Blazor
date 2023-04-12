@@ -1,13 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace RoboDeApostas.Migrations
 {
     /// <inheritdoc />
-    public partial class First : Migration
+    public partial class primeiro : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,9 +15,9 @@ namespace RoboDeApostas.Migrations
                 name: "Liga",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Nome = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,19 +28,19 @@ namespace RoboDeApostas.Migrations
                 name: "Partidas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NomeTimeDaCasa = table.Column<string>(type: "text", nullable: false),
-                    NomeTimeVisitante = table.Column<string>(type: "text", nullable: false),
-                    LinkDaPartida = table.Column<string>(type: "text", nullable: false),
-                    Liga = table.Column<string>(type: "text", nullable: false),
-                    ODD_Vitoria_TimeDaCasa = table.Column<float>(type: "real", nullable: false),
-                    ODD_Vitoria_TimeVisitante = table.Column<float>(type: "real", nullable: false),
-                    ODD_Empate_Ambos = table.Column<float>(type: "real", nullable: false),
-                    ODD_VitoriaOuEmpate_TimeCasa = table.Column<float>(type: "real", nullable: false),
-                    ODD_VitoriaOuEmpate_TimeVisitante = table.Column<float>(type: "real", nullable: false),
-                    DataCompleta = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    NomeDaCasaDeAposta = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    NomeTimeDaCasa = table.Column<string>(type: "TEXT", nullable: false),
+                    NomeTimeVisitante = table.Column<string>(type: "TEXT", nullable: false),
+                    LinkDaPartida = table.Column<string>(type: "TEXT", nullable: false),
+                    Liga = table.Column<string>(type: "TEXT", nullable: false),
+                    ODD_Vitoria_TimeDaCasa = table.Column<double>(type: "REAL", nullable: false),
+                    ODD_Vitoria_TimeVisitante = table.Column<double>(type: "REAL", nullable: false),
+                    ODD_Empate_Ambos = table.Column<double>(type: "REAL", nullable: false),
+                    ODD_VitoriaOuEmpate_TimeCasa = table.Column<double>(type: "REAL", nullable: false),
+                    ODD_VitoriaOuEmpate_TimeVisitante = table.Column<double>(type: "REAL", nullable: false),
+                    DataCompleta = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
+                    NomeDaCasaDeAposta = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,8 +51,8 @@ namespace RoboDeApostas.Migrations
                 name: "Surebet2Casas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true)
                 },
                 constraints: table =>
                 {
@@ -64,8 +63,8 @@ namespace RoboDeApostas.Migrations
                 name: "Surebet3Casas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true)
                 },
                 constraints: table =>
                 {
@@ -76,11 +75,11 @@ namespace RoboDeApostas.Migrations
                 name: "LinkDaLiga",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    LigaId = table.Column<int>(type: "integer", nullable: false),
-                    CasaDeAposta = table.Column<string>(type: "text", nullable: false),
-                    Link = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    LigaId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CasaDeAposta = table.Column<string>(type: "TEXT", nullable: false),
+                    Link = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

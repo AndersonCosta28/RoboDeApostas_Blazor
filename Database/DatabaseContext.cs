@@ -17,7 +17,7 @@ namespace RoboDeApostas.Database
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json")
                 .Build();
-            optionsBuilder.UseNpgsql(configuration.GetConnectionString("Postgres"));
+            optionsBuilder.UseSqlite(configuration.GetConnectionString("Sqlite"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

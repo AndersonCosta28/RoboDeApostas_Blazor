@@ -4,7 +4,7 @@ class Betfair : CasaDeAposta
 {
     public override async Task AtribuirDataDosJogosAsync(Partida partida)
     {
-        var valor = await page.Locator("#mod-matchheader-1001 .ui-countdown").TextContentAsync();
+        var valor = await Pagina.Locator("#mod-matchheader-1001 .ui-countdown").TextContentAsync();
         DateTime novaData;
         List<string> valorArray = valor!.Trim().Split("\n").ToList();
         if (valor.Contains("KO"))
@@ -33,10 +33,10 @@ class Betfair : CasaDeAposta
         string timeDaCasa = "td.home-runner",
                timeVisitante = "td.away-runner";
 
-        // await this.Esperar3Vezes_Seletor(page, timeDaCasa);
-        // await this.Esperar3Vezes_Seletor(page, timeVisitante);
-        jogo.NomeTimeDaCasa = await page.Locator(timeDaCasa).InnerTextAsync();
-        jogo.NomeTimeVisitante = await page.Locator(timeVisitante).InnerTextAsync();
+        // await this.Esperar3Vezes_Seletor(Pagina, timeDaCasa);
+        // await this.Esperar3Vezes_Seletor(Pagina, timeVisitante);
+        jogo.NomeTimeDaCasa = await Pagina.Locator(timeDaCasa).InnerTextAsync();
+        jogo.NomeTimeVisitante = await Pagina.Locator(timeVisitante).InnerTextAsync();
     }
 
     protected override async Task<bool> JogoJaComecouAsync(ILocator cardDoJogo)

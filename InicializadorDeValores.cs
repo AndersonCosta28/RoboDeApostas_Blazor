@@ -366,13 +366,7 @@ namespace RoboDeApostas
                 CasaDeAposta = "Betway"
             });
 
-            db.LinkDaLiga.Add(new LinkDaLiga
-            {
-                LigaId = db.Liga.Where(l => l.Nome == Ligas.Brasil_LigaBrasileiraPaulista).First().Id,
-                Link = "https://betway.com/pt/sports/grp/soccer/brazil/paulista",
-                CasaDeAposta = "Betway"
-            });
-
+            
             db.LinkDaLiga.Add(new LinkDaLiga
             {
                 LigaId = db.Liga.Where(l => l.Nome == Ligas.Franca_Ligue1).First().Id,
@@ -384,13 +378,6 @@ namespace RoboDeApostas
             {
                 LigaId = db.Liga.Where(l => l.Nome == Ligas.Holanda_Eredivisie).First().Id,
                 Link = "https://betway.com/pt/sports/grp/soccer/netherlands/eredivisie",
-                CasaDeAposta = "Betway"
-            });
-
-            db.LinkDaLiga.Add(new LinkDaLiga
-            {
-                LigaId = db.Liga.Where(l => l.Nome == Ligas.CopaDasNacoesAfricanasEliminatorias).First().Id,
-                Link = "https://betway.com/pt/sports/grp/soccer/international/africa-cup-of-nations-qualifiers",
                 CasaDeAposta = "Betway"
             });
 
@@ -664,13 +651,7 @@ namespace RoboDeApostas
                 CasaDeAposta = "Betano"
             });
 
-            db.LinkDaLiga.Add(new LinkDaLiga
-            {
-                LigaId = db.Liga.Where(l => l.Nome == Ligas.Brasil_LigaBrasileiraPaulista).First().Id,
-                Link = "https://br.betano.com/sport/futebol/brasil/campeonato-paulista-serie-a1/16901/",
-                CasaDeAposta = "Betano"
-            });
-
+            
             db.LinkDaLiga.Add(new LinkDaLiga
             {
                 LigaId = db.Liga.Where(l => l.Nome == Ligas.Franca_Ligue1).First().Id,
@@ -682,13 +663,6 @@ namespace RoboDeApostas
             {
                 LigaId = db.Liga.Where(l => l.Nome == Ligas.Holanda_Eredivisie).First().Id,
                 Link = "https://br.betano.com/sport/futebol/holanda/eredivisie/17067r/",
-                CasaDeAposta = "Betano"
-            });
-
-            db.LinkDaLiga.Add(new LinkDaLiga
-            {
-                LigaId = db.Liga.Where(l => l.Nome == Ligas.CopaDasNacoesAfricanasEliminatorias).First().Id,
-                Link = "https://br.betano.com/sport/futebol/caf/copa-das-nacoes-africanas-eliminatorias/191348/",
                 CasaDeAposta = "Betano"
             });
 
@@ -1060,13 +1034,7 @@ namespace RoboDeApostas
 
 
 
-            db.LinkDaLiga.Add(new LinkDaLiga
-            {
-                LigaId = db.Liga.Where(l => l.Nome == Ligas.Brasil_LigaBrasileiraPaulista).First().Id,
-                Link = "https://www.betfair.com/sport/football/brasil-paulista-serie-a1/2490975",
-                CasaDeAposta = "Betfair"
-            });
-
+            
 
 
             db.LinkDaLiga.Add(new LinkDaLiga
@@ -1408,13 +1376,6 @@ namespace RoboDeApostas
             {
                 LigaId = db.Liga.Where(l => l.Nome == Ligas.Holanda_Eredivisie).First().Id,
                 Link = "https://sports.sportingbet.com/pt-br/sports/futebol-4/aposta/holanda-36",
-                CasaDeAposta = "Sporting Bet"
-            });
-
-            db.LinkDaLiga.Add(new LinkDaLiga
-            {
-                LigaId = db.Liga.Where(l => l.Nome == Ligas.CopaDasNacoesAfricanasEliminatorias).First().Id,
-                Link = "https://sports.sportingbet.com/pt-br/sports/futebol-4/aposta/%C3%A1frica-11/copa-africana-de-na%C3%A7%C3%B5es-eliminat%C3%B3rias-103058",
                 CasaDeAposta = "Sporting Bet"
             });
 

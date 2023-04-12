@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using System.Text.Unicode;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 namespace RoboDeApostas.Models;
 
 public abstract class CasaDeAposta
@@ -12,7 +12,7 @@ public abstract class CasaDeAposta
     #endregion
 
     #region Campos
-    protected IBrowser? Navegador;
+    protected IBrowser Navegador;
     public string NomeDoSite = string.Empty;
     public List<Partida> ListaDePartidas = new();
 
@@ -45,7 +45,7 @@ public abstract class CasaDeAposta
 
     public string Link_PaginaInicial = string.Empty;
 
-    protected IPage page;
+    protected IPage Pagina;
 
     public string LigaEmExecucao = string.Empty;
 
@@ -72,45 +72,58 @@ public abstract class CasaDeAposta
     }
     protected abstract void Configurar();
 
-    public async Task RodarPadraoAsync(string link)
+    public virtual async Task RodarPadraoAsync(string link)
     {
-        var playwright = await Playwright.CreateAsync();
-        IBrowser navegador = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions() { Headless = !AbrirNavegador, Devtools = false });
-        try
-        {
-            this.Navegador = navegador;
-            RobosEmExecucao.Add(this);
-            await this.PegarOsJogosCorrentesAsync(link);
-        }
-        finally
-        {
-            RobosEmExecucao.Remove(this);
-            await navegador.CloseAsync();
-        }
+        //using var db = new DatabaseContext();
+        //db.Partidas.AddRange(this.ListaDePartidas);
+        //db.SaveChanges();
+        //var playwright = await Playwright.CreateAsync();
+        //IBrowser navegador = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions() { Headless = !AbrirNavegador, Devtools = false });
+        //try
+        //{
+        //    this.Navegador = navegador;
+        //    RobosEmExecucao.Add(this);
+        //    await this.PegarOsJogosCorrentesAsync(link);
+        //}
+        //finally
+        //{
+        //    RobosEmExecucao.Remove(this);
+        //    await navegador.CloseAsync();
+        //}
     }
     #endregion
 
     #region Funções de navegação
 
+    protected virtual async Task NavegarParaTelaInicialDaLiga(string link)
+    {
+        SalvarLog($"Navegando até a liga {this.LigaEmExecucao} do site {this.NomeDoSite}");
+        await NavegarEEsperar3VezesSeletoresAsync(new[] { Seletor_Tabela }, link);
+        await Pagina.WaitForSelectorAsync(Seletor_CardDeJogos, new() { Timeout = 10000 });
+        await Pagina.WaitForTimeoutAsync(segundosParaAguardarAposEntrarNaPaginaDaLiga * 1000);
+    }
+
+    protected virtual async Task<List<Partida>> PegarCardsDosJogosNaTelaInicialDaLiga()
+    {
+        List<Partida> partidas = new();
+        var cardDosJogos = await Pagina.Locator(Seletor_CardDeJogos).AllAsync();
+        foreach (var cardDoJogo in cardDosJogos)
+            if (await ValidarCardAsync(cardDoJogo))
+                partidas.Add(new(await MontarLinkDoParaAcessarOJogoAsync(cardDoJogo), this.LigaEmExecucao, NomeDoSite));
+        return partidas;
+    }
+
     public virtual async Task PegarOsJogosCorrentesAsync(string link)
-    {       
-        page = await Navegador!.NewPageAsync(InjetarValoresNaPagina ? new BrowserNewPageOptions()
+    {
+        Pagina = await Navegador!.NewPageAsync(InjetarValoresNaPagina ? new BrowserNewPageOptions()
         {
             UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
             ExtraHTTPHeaders = ValoresParaInjetarNaPagina
         } : null);
         try
         {
-            using var db = new DatabaseContext();
-            SalvarLog($"Navegando até a liga {this.LigaEmExecucao} do site {NomeDoSite}");
-            await NavegarEEsperar3VezesSeletoresAsync(new[] { Seletor_Tabela }, link);
-            await page.WaitForSelectorAsync(Seletor_CardDeJogos, new() { Timeout = 10000 });
-            await page.WaitForTimeoutAsync(segundosParaAguardarAposEntrarNaPaginaDaLiga * 1000);
-            List<Partida> partidas = new();
-            var cardDosJogos = await page.Locator(Seletor_CardDeJogos).AllAsync();
-            foreach (var cardDoJogo in cardDosJogos)
-                if (await ValidarCardAsync(cardDoJogo))
-                    partidas.Add(new(await MontarLinkDoParaAcessarOJogoAsync(cardDoJogo), this.LigaEmExecucao, NomeDoSite));
+            await this.NavegarParaTelaInicialDaLiga(link);
+            List<Partida> partidas = await this.PegarCardsDosJogosNaTelaInicialDaLiga();
 
             int i = 1;
             foreach (Partida partida in partidas)
@@ -118,10 +131,10 @@ public abstract class CasaDeAposta
                 try
                 {
                     SalvarLog($"Acessando partida {i}/{partidas.Count} da liga {this.LigaEmExecucao} da casa de aposta {NomeDoSite}");
-                    await NavegarEEsperar3VezesSeletoresAsync(new string[] { Seletor_ODDS, Seletor_NomeDosTimes }, partida.LinkDaPartida);
-                    await AtribuirNomeDosTimesAsync(partida);
-                    await AtribuirOddsAsync(partida);
-                    await AtribuirDataDosJogosAsync(partida);
+                    await this.NavegarEEsperar3VezesSeletoresAsync(new string[] { Seletor_ODDS, Seletor_NomeDosTimes }, partida.LinkDaPartida);
+                    await this.AtribuirNomeDosTimesAsync(partida);
+                    await this.AtribuirOddsAsync(partida);
+                    await this.AtribuirDataDosJogosAsync(partida);
                 }
                 catch (Exception e)
                 {
@@ -138,12 +151,12 @@ public abstract class CasaDeAposta
         }
         catch (Exception e)
         {
-            SalvarLog($"Lançou erro final {NomeDoSite} na liga {this.LigaEmExecucao} no link {page.Url} \n {e.Message} \n {e.StackTrace} \n {e.InnerException}");
-            await page.ScreenshotAsync(new PageScreenshotOptions() { Path = "./Prints/" + NomeDoSite + DateTime.Now.Ticks.ToString() + ".png" });
+            SalvarLog($"Lançou erro final {NomeDoSite} na liga {this.LigaEmExecucao} no link {Pagina.Url} \n {e.Message} \n {e.StackTrace} \n {e.InnerException}");
+            await Pagina.ScreenshotAsync(new PageScreenshotOptions() { Path = "./Prints/" + NomeDoSite + DateTime.Now.Ticks.ToString() + ".png" });
         }
         finally
         {
-            await page.CloseAsync();
+            await Pagina.CloseAsync();
         }
     }
 
@@ -155,15 +168,15 @@ public abstract class CasaDeAposta
 
     protected virtual async Task AtribuirOddsAsync(Partida jogo)
     {
-        await page.WaitForSelectorAsync(Seletor_ODDS);
-        var opcoesDeAposta = await page.Locator(Seletor_OpcoesDeAposta).AllAsync();
+        await Pagina.WaitForSelectorAsync(Seletor_ODDS);
+        var opcoesDeAposta = await Pagina.Locator(Seletor_OpcoesDeAposta).AllAsync();
         foreach (var opcaoDeAposta in opcoesDeAposta)
         {
             if (await opcaoDeAposta.Locator(Seletor_TituloDaOpcaoDeAposta).CountAsync() == 0) continue;
             var titulo = await opcaoDeAposta.Locator(Seletor_TituloDaOpcaoDeAposta).InnerTextAsync();
             if (Titulo_ChanceDupla.Contains(titulo))
             {
-                await page.WaitForSelectorAsync(Seletor_ODDS);
+                await Pagina.WaitForSelectorAsync(Seletor_ODDS);
                 var valor = await opcaoDeAposta.Locator(Seletor_ODDS).AllInnerTextsAsync();
                 if (valor.Count < 3)
                 {
@@ -186,7 +199,7 @@ public abstract class CasaDeAposta
             }
             else if (Titulo_ResultadoFinal.Contains(titulo))
             {
-                await page.WaitForSelectorAsync(Seletor_ODDS);
+                await Pagina.WaitForSelectorAsync(Seletor_ODDS);
                 var valor = await opcaoDeAposta.Locator(Seletor_ODDS).AllInnerTextsAsync();
                 if (valor.Count < 3)
                 {
@@ -226,13 +239,13 @@ public abstract class CasaDeAposta
     {
         string _seletores = string.Join(", ", seletores.Where(s => !string.IsNullOrWhiteSpace(s)));
         int tentativas = 3;
-        try { await page.GotoAsync(link); }
+        try { await Pagina.GotoAsync(link); }
         catch (Exception) { }
         while (true)
         {
             try
             {
-                await page.WaitForSelectorAsync(_seletores, new PageWaitForSelectorOptions() { });
+                await Pagina.WaitForSelectorAsync(_seletores, new PageWaitForSelectorOptions() { });
                 break;
             }
             catch (Exception)
@@ -240,15 +253,23 @@ public abstract class CasaDeAposta
                 if (tentativas < 0)
                     throw;
 
-                if (await page.Locator(_seletores).CountAsync() != 0)
+                if (await Pagina.Locator(_seletores).CountAsync() != 0)
                     return;
 
                 tentativas--;
                 SalvarLog("Executou a tentativa: " + tentativas + " no link -> " + link);
-                await page.ReloadAsync();
+                await Pagina.ReloadAsync();
             }
         }
     }
+
+    #endregion
+
+    #region Funções de API
+
+    protected virtual async Task PreencherDetalhesDaPartida_RequestAsync(Partida partida) { }
+
+    protected async virtual Task PreencherListaDePartidas(string link) { }
 
     #endregion
 

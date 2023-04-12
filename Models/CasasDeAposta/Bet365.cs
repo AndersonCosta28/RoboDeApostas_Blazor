@@ -3,7 +3,7 @@ class Bet365 : CasaDeAposta
 {
     public override async Task AtribuirDataDosJogosAsync(Partida jogo)
     {
-        string[] data = (await page.Locator(".sph-ExtraData_TimeStamp").InnerTextAsync()).Trim().Split(" ");
+        string[] data = (await Pagina.Locator(".sph-ExtraData_TimeStamp").InnerTextAsync()).Trim().Split(" ");
         string horario = data[2];
         byte dia = byte.Parse(data[0]);
         byte mes = Dicionarios.Meses[data[1].ToLower()];
@@ -12,7 +12,7 @@ class Bet365 : CasaDeAposta
 
     protected override async Task AtribuirNomeDosTimesAsync(Partida jogo)
     {
-        var nomeDosTimes = (await page.Locator(".sph-EventHeader_Label span").InnerTextAsync()).Trim().Split(" v ");
+        var nomeDosTimes = (await Pagina.Locator(".sph-EventHeader_Label span").InnerTextAsync()).Trim().Split(" v ");
         jogo.NomeTimeDaCasa = nomeDosTimes[0];
         jogo.NomeTimeVisitante = nomeDosTimes[1];
     }
@@ -80,7 +80,7 @@ class Bet365 : CasaDeAposta
     public override async Task PegarOsJogosCorrentesAsync(string link)
     {
         string liga = this.LigaEmExecucao;
-        page = await Navegador!.NewPageAsync(new()
+        Pagina = await Navegador!.NewPageAsync(new()
         {
             UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
             ExtraHTTPHeaders = ValoresParaInjetarNaPagina,
@@ -88,43 +88,43 @@ class Bet365 : CasaDeAposta
         });
         using var db = new DatabaseContext();
         await NavegarEEsperar3VezesSeletoresAsync(new[] { Seletor_Tabela }, link);
-        await page.WaitForSelectorAsync(Seletor_Tabela);
-        await page.WaitForTimeoutAsync(1000);
-        var cards = await page.Locator(Seletor_CardDeJogos).AllAsync();
+        await Pagina.WaitForSelectorAsync(Seletor_Tabela);
+        await Pagina.WaitForTimeoutAsync(1000);
+        var cards = await Pagina.Locator(Seletor_CardDeJogos).AllAsync();
         for (int i = 0; i < cards.Count; i++)
         {
-            await page.WaitForSelectorAsync(Seletor_Tabela);
-            await page.WaitForTimeoutAsync(1000);
-            var itens = await page.Locator(Seletor_CardDeJogos).AllAsync();
+            await Pagina.WaitForSelectorAsync(Seletor_Tabela);
+            await Pagina.WaitForTimeoutAsync(1000);
+            var itens = await Pagina.Locator(Seletor_CardDeJogos).AllAsync();
             await itens[i].ClickAsync();
             SalvarLog($"Acessando jogo {i + 1}/{cards.Count} da liga {this.LigaEmExecucao} da casa de aposta {NomeDoSite}");
-            await page.WaitForTimeoutAsync(1000);
-            await page.ReloadAsync(new PageReloadOptions() { WaitUntil = WaitUntilState.DOMContentLoaded });
+            await Pagina.WaitForTimeoutAsync(1000);
+            await Pagina.ReloadAsync(new PageReloadOptions() { WaitUntil = WaitUntilState.DOMContentLoaded });
             try
             {
-                await page.WaitForSelectorAsync(".sph-EventHeader.sph-EventHeader-hasnavbar.sph-EventHeader-wide");
+                await Pagina.WaitForSelectorAsync(".sph-EventHeader.sph-EventHeader-hasnavbar.sph-EventHeader-wide");
             }
             catch (Exception)
             {
-                await page.GoBackAsync();
-                await page.WaitForTimeoutAsync(1000);
-                await page.ReloadAsync();
-                await page.WaitForSelectorAsync(Seletor_Tabela);
+                await Pagina.GoBackAsync();
+                await Pagina.WaitForTimeoutAsync(1000);
+                await Pagina.ReloadAsync();
+                await Pagina.WaitForSelectorAsync(Seletor_Tabela);
                 continue;
             }
-            Partida partida = new(page.Url, this.LigaEmExecucao, NomeDoSite);
+            Partida partida = new(Pagina.Url, this.LigaEmExecucao, NomeDoSite);
             await AtribuirNomeDosTimesAsync(partida);
             await AtribuirOddsAsync(partida);
             await AtribuirDataDosJogosAsync(partida);
             ListaDePartidas.Add(partida);
-            await page.GotoAsync(link);
-            await page.WaitForTimeoutAsync(1000);
-            await page.ReloadAsync();
-            await page.WaitForSelectorAsync(Seletor_Tabela);
+            await Pagina.GotoAsync(link);
+            await Pagina.WaitForTimeoutAsync(1000);
+            await Pagina.ReloadAsync();
+            await Pagina.WaitForSelectorAsync(Seletor_Tabela);
             await SalvarPartidaNoBanco(partida);
         }
 
-        // await page.WaitForSelectorAsync(".sph-EventHeader.sph-EventHeader-hasnavbar.sph-EventHeader-wide");
-        await page.CloseAsync();
+        // await Pagina.WaitForSelectorAsync(".sph-EventHeader.sph-EventHeader-hasnavbar.sph-EventHeader-wide");
+        await Pagina.CloseAsync();
     }
 }

@@ -9,13 +9,13 @@ namespace RoboDeApostas.Models
         public string NomeTimeVisitante { get; set; } = "";
         public string LinkDaPartida { get; set; } = "";
         public string Liga { get; set; } = "";
-        public float ODD_Vitoria_TimeDaCasa { get; set; }
-        public float ODD_Vitoria_TimeVisitante { get; set; }
-        public float ODD_Empate_Ambos { get; set; }
-        public float ODD_VitoriaOuEmpate_TimeCasa { get; set; }
-        public float ODD_VitoriaOuEmpate_TimeVisitante { get; set; }
+        public double ODD_Vitoria_TimeDaCasa { get; set; }
+        public double ODD_Vitoria_TimeVisitante { get; set; }
+        public double ODD_Empate_Ambos { get; set; }
+        public double ODD_VitoriaOuEmpate_TimeCasa { get; set; }
+        public double ODD_VitoriaOuEmpate_TimeVisitante { get; set; }
         [DataType(DataType.DateTime)]
-        public DateTime DataCompleta { get; set; }
+        public DateTimeOffset DataCompleta { get; set; }
         public string Data { get {
                 string dia = DataCompleta.Day < 10 ? "0" + DataCompleta.Day : DataCompleta.Day.ToString();
                 string mes = DataCompleta.Month < 10 ? "0" + DataCompleta.Month : DataCompleta.Month.ToString();

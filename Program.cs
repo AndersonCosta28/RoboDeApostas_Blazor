@@ -1,16 +1,15 @@
-global using RoboDeApostas.Database;
-global using RoboDeApostas.Models;
 global using Microsoft.Playwright;
 global using System.Globalization;
 global using System.Text.Encodings.Web;
-global using System.Text.Json;
-global using RoboDeApostas.Utils;
 global using System.Data.Entity.Core;
 global using Microsoft.EntityFrameworkCore;
-using RoboDeApostas.Data;
+global using HtmlAgilityPack;
+global using RoboDeApostas.Utils;
+global using RoboDeApostas.Database;
+global using RoboDeApostas.Models;
+global using RoboDeApostas.Models.CasasDeAposta;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using RoboDeApostas.Models.CasasDeAposta;
 using Blazored.Toast;
 
 if (!Directory.Exists("./Logs"))
@@ -21,8 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite")));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddBlazoredToast();
 builder.Services.AddScoped<Bet365>();
@@ -65,10 +63,10 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 //RoboDeApostas.InicializadorDeValores.Liga();
+//RoboDeApostas.InicializadorDeValores.Betano();
 //RoboDeApostas.InicializadorDeValores.SportingBet();
 //RoboDeApostas.InicializadorDeValores.Betway();
-//RoboDeApostas.InicializadorDeValores.Betano();
 //RoboDeApostas.InicializadorDeValores.Bet365();
-//RoboDeApostas.InicializadorDeValores.Betfair();
 //RoboDeApostas.InicializadorDeValores.SportsBetIo();
+//RoboDeApostas.InicializadorDeValores.Betfair();
 app.Run();

@@ -7,4 +7,10 @@ public static class Funcoes
             Directory.Delete(nomeDaPasta, true);
         Directory.CreateDirectory(nomeDaPasta);
     }
+
+    public static DateTimeOffset ConverterFusoHorario(DateTimeOffset data)
+    {        
+        TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+        return TimeZoneInfo.ConvertTime((DateTimeOffset)data, timeZone);
+    }
 }

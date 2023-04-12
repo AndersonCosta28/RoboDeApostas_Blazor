@@ -53,6 +53,7 @@
     }
 
     public void CalcularSurebets(){
+        Console.WriteLine("Calculando surebets");
         toastService.ShowInfo("Calculando surebets");
         var partidasAgrupadas = this.partidas.GroupBy(p => p.NomeDaCasaDeAposta);
         int i = 0, j = 0, l = 0;
@@ -80,12 +81,13 @@
                     List<Partida> partidas3 = partidaAgrupada3.ToList();
                     this.SepararPartidasValidasDe3CasasDeAposta(partidas1, partidas2, partidas3);
                 }
-                
+
             }
             i++;
         }
         context.SaveChanges();
         toastService.ShowInfo("Terminou de calcular surebets");
+        Console.WriteLine("Terminou de calcular surebets");
     }
 
     public void SepararPartidasValidasDe2CasasDeAposta(List<Partida> partidas1, List<Partida> partidas2)
@@ -100,11 +102,11 @@
                 bool validacaoDaLiga = partida1.Liga == partida2.Liga;
                 
                 if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante) continue;
-                float odd1 = CalcularOdd2Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_VitoriaOuEmpate_TimeVisitante);
-                float odd2 = CalcularOdd2Casas(partida1.ODD_VitoriaOuEmpate_TimeCasa, partida2.ODD_Vitoria_TimeVisitante);
-                float odd3 = CalcularOdd2Casas(partida1.ODD_VitoriaOuEmpate_TimeVisitante, partida2.ODD_Vitoria_TimeDaCasa);
-                float odd4 = CalcularOdd2Casas(partida1.ODD_Vitoria_TimeVisitante, partida2.ODD_VitoriaOuEmpate_TimeCasa);
-                float lucro = new List<float>() {odd1, odd2, odd3, odd4 }.Max();
+                double odd1 = CalcularOdd2Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_VitoriaOuEmpate_TimeVisitante);
+                double odd2 = CalcularOdd2Casas(partida1.ODD_VitoriaOuEmpate_TimeCasa, partida2.ODD_Vitoria_TimeVisitante);
+                double odd3 = CalcularOdd2Casas(partida1.ODD_VitoriaOuEmpate_TimeVisitante, partida2.ODD_Vitoria_TimeDaCasa);
+                double odd4 = CalcularOdd2Casas(partida1.ODD_Vitoria_TimeVisitante, partida2.ODD_VitoriaOuEmpate_TimeCasa);
+                double lucro = new List<double>() {odd1, odd2, odd3, odd4 }.Max();
                 if(lucro <= 0) continue;
                 context.Surebet2Casas.Add(new()
                     {
@@ -139,13 +141,13 @@
                     validacaoDataDoJogo = partida1.Data == partida3.Data;
                     validacaoDaLiga = partida1.Liga == partida3.Liga;
                     if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante) continue;
-                    float odd1 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_Vitoria_TimeVisitante, partida3.ODD_Empate_Ambos);
-                    float odd2 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_Empate_Ambos, partida3.ODD_Vitoria_TimeVisitante);
-                    float odd3 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeVisitante, partida2.ODD_Vitoria_TimeDaCasa, partida3.ODD_Empate_Ambos);
-                    float odd4 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeVisitante, partida2.ODD_Empate_Ambos, partida3.ODD_Vitoria_TimeDaCasa);
-                    float odd5 = CalcularOdd3Casas(partida1.ODD_Empate_Ambos, partida2.ODD_Vitoria_TimeDaCasa, partida3.ODD_Vitoria_TimeVisitante);
-                    float odd6 = CalcularOdd3Casas(partida1.ODD_Empate_Ambos, partida2.ODD_Vitoria_TimeVisitante, partida3.ODD_Vitoria_TimeDaCasa);
-                    float lucro = new List<float>() {odd1, odd2, odd3, odd4, odd5, odd6}.Max();
+                    double odd1 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_Vitoria_TimeVisitante, partida3.ODD_Empate_Ambos);
+                    double odd2 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_Empate_Ambos, partida3.ODD_Vitoria_TimeVisitante);
+                    double odd3 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeVisitante, partida2.ODD_Vitoria_TimeDaCasa, partida3.ODD_Empate_Ambos);
+                    double odd4 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeVisitante, partida2.ODD_Empate_Ambos, partida3.ODD_Vitoria_TimeDaCasa);
+                    double odd5 = CalcularOdd3Casas(partida1.ODD_Empate_Ambos, partida2.ODD_Vitoria_TimeDaCasa, partida3.ODD_Vitoria_TimeVisitante);
+                    double odd6 = CalcularOdd3Casas(partida1.ODD_Empate_Ambos, partida2.ODD_Vitoria_TimeVisitante, partida3.ODD_Vitoria_TimeDaCasa);
+                    double lucro = new List<double>() {odd1, odd2, odd3, odd4, odd5, odd6}.Max();
                     if(lucro <= 0) continue;
                     context.Surebet3Casas.Add(new()
                         {
@@ -172,13 +174,13 @@
         return time1.Contains(time2) || time2.Contains(time1);
     }
 
-    float CalcularOdd2Casas(float odd1, float odd2)
+    double CalcularOdd2Casas(double odd1, double odd2)
     {
         if (odd1 == 0 || odd2 == 0) return 0;
         return 100 - (100 / odd1 + 100 / odd2);
     }
 
-    float CalcularOdd3Casas(float odd1, float odd2, float odd3){
+    double CalcularOdd3Casas(double odd1, double odd2, double odd3){
         if (odd1 == 0 || odd2 == 0 || odd3 == 0) return 0;
         return 100 - (100 / odd1 + 100 / odd2 + 100 / odd3);
     }

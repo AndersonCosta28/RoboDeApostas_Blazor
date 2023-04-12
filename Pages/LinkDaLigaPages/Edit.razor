@@ -21,7 +21,7 @@
     {
         try
         {
-            if (context.LinkDaLiga.Include(l => l.Liga).Where(l => l.LigaId == linkDaLiga.LigaId && l.CasaDeAposta == linkDaLiga.CasaDeAposta).Count() > 0)
+            if (context.LinkDaLiga.Include(l => l.Liga).Where(l => l.LigaId == linkDaLiga.LigaId && l.CasaDeAposta == linkDaLiga.CasaDeAposta && l.Id != this.linkDaLiga.Id).Count() > 0)
             {
                 toastService.ShowError("Já exista essa liga");
                 return;

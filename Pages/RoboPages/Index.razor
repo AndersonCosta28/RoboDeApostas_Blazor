@@ -11,26 +11,36 @@
 <PageTitle>Robôs</PageTitle>
 <h4>Robôs em execução: @CasaDeAposta.RobosEmExecucao.Count</h4>
 <ul>
-@foreach(string robo in RobosEmExecucoes)
+    @foreach (string robo in RobosEmExecucoes)
     {
         <li>@robo</li>
     }
 </ul>
-<hr/>
+<hr />
 
 <div class="row justify-content-between">
-    <div class="col-4">
+    <div class="col-3">
         <input type="search" placeholder="Pesquisar" @bind="this.textoDePesquisa" />
     </div>
-    <div class="col-4">
+    <div class="col-3">
         <button class="btn btn-primary" @onclick="@this.ExecutarTodosOsRobos">Executar todos</button>
     </div>
-    <div class="col-4">
+    <div class="col-3">
         <span>Executar com navegador aberto</span>
         <Input type="checkbox" value="@AbrirNavegador" @onchange="(e) => {
             AbrirNavegador = (bool)e.Value;
             CasaDeAposta.AbrirNavegador = (bool)e.Value;
         }" />
+    </div>
+    <div class="col-3" style="width: fit-content">
+        <select multiple>
+            <option selected>""</option>
+            @foreach (CasaDeAposta casaDeAposta in CasaDeAposta.CasasDeAposta)
+            {
+                <options>@casaDeAposta.NomeDoSite</options>
+            }
+
+        </select>
     </div>
 </div>
 <table class="table" style="width: 100%">
@@ -55,7 +65,7 @@
 
 @code {
     private List<LinkDaLiga> links;
-    private string textoDePesquisa = "";    
+    private string textoDePesquisa = "";
     private static List<string> RobosEmExecucoes = new();
     private static bool AbrirNavegador = CasaDeAposta.AbrirNavegador;
     protected override void OnInitialized()
@@ -69,10 +79,11 @@
             toastService.ShowError("Já existe uma execução para essa casa de aposta, aguarde finalizar");
         else
             foreach (CasaDeAposta casa in CasaDeAposta.CasasDeAposta)
-                if (casaDeAposta == casa.NomeDoSite){
+                if (casaDeAposta == casa.NomeDoSite)
+                {
                     string robo = $"{casa.NomeDoSite} - {liga}";
                     RobosEmExecucoes.Add(robo);
-                    casa.LigaEmExecucao = liga;    
+                    casa.LigaEmExecucao = liga;
                     await casa.RodarPadraoAsync(link);
                     RobosEmExecucoes.Remove(robo);
                 }
@@ -81,18 +92,20 @@
     public async Task ExecutarTodosOsRobos()
     {
         List<Task> tarefas = new();
-        foreach (CasaDeAposta casa in CasaDeAposta.CasasDeAposta){
-            var _links = links.Where( lk => lk.CasaDeAposta == casa.NomeDoSite).Select( lk => new {Link = lk.Link, Liga = lk.Liga.Nome}).ToList();
-            tarefas.Add(Task.Run(async () => {
-                foreach(var lk in _links){
-                    string robo = $"{casa.NomeDoSite} - {lk.Liga}";
-                    RobosEmExecucoes.Add(robo);
-                    casa.LigaEmExecucao = lk.Liga;
-                    await casa.RodarPadraoAsync(lk.Link);
-                    RobosEmExecucoes.Remove(robo);
-                }                           
-            }));
+        foreach (CasaDeAposta casa in CasaDeAposta.CasasDeAposta)
+        {
+            var _links = links.Where(lk => lk.CasaDeAposta == casa.NomeDoSite).Select(lk => new { Link = lk.Link, Liga = lk.Liga.Nome }).ToList();
+            //tarefas.Add(Task.Run(async () => {
+            foreach (var lk in _links)
+            {
+                string robo = $"{casa.NomeDoSite} - {lk.Liga}";
+                RobosEmExecucoes.Add(robo);
+                casa.LigaEmExecucao = lk.Liga;
+                await casa.RodarPadraoAsync(lk.Link);
+                RobosEmExecucoes.Remove(robo);
+            }
+            //}));
         }
-        await Task.WhenAll(tarefas);
+        //await Task.WhenAll(tarefas);
     }
 }

@@ -14,6 +14,9 @@ using Blazored.Toast;
 if (!Directory.Exists("./Logs"))
     Directory.CreateDirectory("./Logs");
 
+if (!Directory.Exists("./Resultados"))
+    Directory.CreateDirectory("./Resultados");
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

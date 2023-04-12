@@ -316,7 +316,7 @@ public abstract class CasaDeAposta
             Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
             WriteIndented = true
         });
-        await File.WriteAllTextAsync($"./{NomeDoSite}.json", json);
+        await File.WriteAllTextAsync($"./Resultados/{NomeDoSite}.json", json);
     }
 
     protected void SalvarLog(string mensagem)

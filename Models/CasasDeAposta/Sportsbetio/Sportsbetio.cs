@@ -103,7 +103,7 @@ class Sportsbet_IO : CasaDeAposta
         }),
             Task.Run(async () =>
             {                
-                var response = await this.Esperar3VezesPeloResponse((r) => r.Url.Contains("https://sportsbet.io/graphql") && r.Request.Method == "POST" && r.Request.PostData.Contains("tournamentId"), 2);
+                var response = await this.Esperar3VezesPeloResponse((r) => r.Url.Contains("https://sportsbet.io/graphql") && r.Request.Method == "POST" && r.Request.PostData.Contains("tournamentId"));
                 var json = await response.TextAsync();
                 var data = ResponseListaDePartida.FromJson(json);
                 var events = data.Data.SportsbetNewGraphql.GetTournamentById.Events;
@@ -134,14 +134,32 @@ class Sportsbet_IO : CasaDeAposta
             {
                 var response = await this.Esperar3VezesPeloResponse((r) => r.Url.Contains("https://sportsbet.io/graphql") && r.Request.Method == "POST" && r.Request.PostData.Contains("MainMarketsQuery"), 2, 2);
                 
-                var json = await response.TextAsync();
-                string json2 = json.Replace(@"{(!|\$)(.*?)}", "").Replace("\"{", "{").Replace("}\"", "}").Replace("\\", "").Replace("""\\"specifiers\\":{(.*?)}""", "").Trim();
-                var data = ResponseDetalheDaPartida.FromJson(json2).Data.SportsbetNewGraphql.GetEventById;
-                partida.ODD_Vitoria_TimeDaCasa = (double)data.MainMarkets.ToList().Find(m => this.Titulo_ResultadoFinal.Contains(m.Name)).Selections[0].Odds;
-                partida.ODD_Empate_Ambos = (double)data.MainMarkets.ToList().Find(m => this.Titulo_ResultadoFinal.Contains(m.Name)).Selections[1].Odds;
-                partida.ODD_Vitoria_TimeVisitante = (double)data.MainMarkets.ToList().Find(m => this.Titulo_ResultadoFinal.Contains(m.Name)).Selections[2].Odds;
-                partida.ODD_VitoriaOuEmpate_TimeCasa = (double)data.MainMarkets.ToList().Find(m => this.Titulo_ChanceDupla.Contains(m.Name)).Selections[indice_VitoriaEmpateTimeDaCasa].Odds;
-                partida.ODD_VitoriaOuEmpate_TimeVisitante = (double)data.MainMarkets.ToList().Find(m => this.Titulo_ChanceDupla.Contains(m.Name)).Selections[indice_VitoriaEmpateTimeVisitante].Odds;
+                string json = await response.TextAsync();     
+                string regex1 = (@"{(!|\$)(.*?)}|({from})|({to}|{hcp})");
+                string regex2 = ("\"{");
+                string regex3 = ("}\"");
+                string regex4 = (@"\\");
+                string regex5 = @",\""specifiers\"":\""(\{.*?\})\""";
+                json = Regex.Replace(json, regex1, "");
+                json = Regex.Replace(json, regex5, "");
+                json = Regex.Replace(json, regex2, "");
+                json = Regex.Replace(json, regex3, "");
+                json = Regex.Replace(json, regex4, "");
+
+
+                var data = ResponseDetalheDaPartida.FromJson(json).Data.SportsbetNewGraphql.GetEventById;
+                double RetornarOdd(List<string> titulos, int indice){
+                    MainMarket? opcaoDeAposta = data.MainMarkets.ToList().Find(m => titulos.Contains(m.Name));
+                    if (opcaoDeAposta == null) return 0;
+                    if (opcaoDeAposta.Selections.Count() - 1 < indice) return 0;
+                    return opcaoDeAposta.Selections[indice].Odds ?? 0;
+                }
+                
+                partida.ODD_Vitoria_TimeDaCasa = RetornarOdd(this.Titulo_ResultadoFinal, 0);
+                partida.ODD_Empate_Ambos = RetornarOdd(this.Titulo_ResultadoFinal, 1);
+                partida.ODD_Vitoria_TimeVisitante = RetornarOdd(this.Titulo_ResultadoFinal, 2);
+                partida.ODD_VitoriaOuEmpate_TimeCasa = RetornarOdd(this.Titulo_ChanceDupla, indice_VitoriaEmpateTimeDaCasa);
+                partida.ODD_VitoriaOuEmpate_TimeVisitante = RetornarOdd(this.Titulo_ChanceDupla, indice_VitoriaEmpateTimeVisitante);
             })
         };
         await Task.WhenAll(tasks);

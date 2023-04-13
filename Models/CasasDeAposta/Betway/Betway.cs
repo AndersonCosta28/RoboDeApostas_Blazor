@@ -142,14 +142,22 @@ class Betway : CasaDeAposta
                     var resposta = await this.Esperar3VezesPeloResponse(r => r.Url.Contains("https://betway.com/api/Events/v2/GetEventDetails"), 2, 2);
                     string json = await resposta.TextAsync();
                     var data = ResponseDetalheDaPartida.FromJson(json);
+                    
+                    double RetornarOdd(List<string> titulos, int indice){
+                        if (data == null) return 0;
+                        RoboDeApostas.Models.CasasDeAposta.BetwayAPI.DetalheDaPartida.Market? market = data.Markets.Find(m => titulos.Contains(m.Title));
+                        if (market == null) return 0;
+                        BetwayAPI.DetalheDaPartida.Outcome? opcaoDeAposta = data.Outcomes.Find(o => o.Id == market.Outcomes[0][indice]);
+                        return opcaoDeAposta != null ? opcaoDeAposta.OddsDecimal ?? 0 : 0;
+                    }
 
-                    partida.ODD_Vitoria_TimeDaCasa = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ResultadoFinal.Contains(m.Title)).Outcomes[0][0]).OddsDecimal! ?? 0;
-                    partida.ODD_Empate_Ambos = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ResultadoFinal.Contains(m.Title)).Outcomes[0][1]).OddsDecimal! ?? 0;
-                    partida.ODD_Vitoria_TimeVisitante = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ResultadoFinal.Contains(m.Title)).Outcomes[0][2]).OddsDecimal ?? 0;
+                    partida.ODD_Vitoria_TimeDaCasa = RetornarOdd(this.Titulo_ResultadoFinal, 0);
+                    partida.ODD_Empate_Ambos = RetornarOdd(this.Titulo_ResultadoFinal, 1);
+                    partida.ODD_Vitoria_TimeVisitante = RetornarOdd(this.Titulo_ResultadoFinal, 2);
 
                     if (data.Markets.Find(m => Titulo_ChanceDupla.Contains(m.Title)) == null || data.Markets.Find(m => Titulo_ChanceDupla.Contains(m.Title)) == null ) return;
-                    partida.ODD_VitoriaOuEmpate_TimeCasa = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ChanceDupla.Contains(m.Title)).Outcomes[0][indice_VitoriaEmpateTimeDaCasa]).OddsDecimal ?? 0;
-                    partida.ODD_VitoriaOuEmpate_TimeVisitante = data.Outcomes.Find(o => o.Id == data.Markets.Find(m => Titulo_ChanceDupla.Contains(m.Title)).Outcomes[0][indice_VitoriaEmpateTimeVisitante]).OddsDecimal ?? 0;
+                    partida.ODD_VitoriaOuEmpate_TimeCasa =  RetornarOdd(this.Titulo_ChanceDupla, this.indice_VitoriaEmpateTimeDaCasa);
+                    partida.ODD_VitoriaOuEmpate_TimeVisitante = RetornarOdd(this.Titulo_ChanceDupla, this.indice_VitoriaEmpateTimeVisitante);
                 }
                 catch (Exception) { throw; }
             })

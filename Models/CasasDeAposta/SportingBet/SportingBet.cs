@@ -106,16 +106,20 @@ class SportingBet : CasaDeAposta
                     var tc = widget.Payload.Items[0].ActiveChildren[0].Payload.Fixtures;
                     foreach (var item in tc)
                     {
+                        double RetornarOdd(List<string> titulos, int indice){
+                            OptionMarket? opcaoDeAposta = item.OptionMarkets.ToList().Find(o => titulos.Contains(o.Name.Value));
+                            return opcaoDeAposta != null ? opcaoDeAposta.Options[indice].Price.Odds ?? 0 : 0;
+                        }
                         Partida partida = new Partida()
                         {
                             NomeTimeDaCasa = item.Participants.Find(p => p.Properties.Type == "HomeTeam").Name.Value,
                             NomeTimeVisitante = item.Participants.Find(p => p.Properties.Type == "AwayTeam").Name.Value,
                             DataCompleta = Funcoes.ConverterFusoHorario((DateTimeOffset)item.StartDate!),
-                            ODD_Vitoria_TimeDaCasa = item.OptionMarkets.Find(o => Titulo_ResultadoFinal.Contains(o.Name.Value)).Options[0].Price.Odds ?? 0,
-                            ODD_Empate_Ambos = item.OptionMarkets.Find(o => Titulo_ResultadoFinal.Contains(o.Name.Value)).Options[1].Price.Odds ?? 0,
-                            ODD_Vitoria_TimeVisitante = item.OptionMarkets.Find(o => Titulo_ResultadoFinal.Contains(o.Name.Value)).Options[2].Price.Odds ?? 0,
-                            ODD_VitoriaOuEmpate_TimeCasa = item.OptionMarkets.Find(o => Titulo_ChanceDupla.Contains(o.Name.Value)).Options[0].Price.Odds ?? 0,
-                            ODD_VitoriaOuEmpate_TimeVisitante = item.OptionMarkets.Find(o => Titulo_ChanceDupla.Contains(o.Name.Value)).Options[1].Price.Odds ?? 0,
+                            ODD_Vitoria_TimeDaCasa = RetornarOdd(this.Titulo_ResultadoFinal, 0),
+                            ODD_Empate_Ambos = RetornarOdd(this.Titulo_ResultadoFinal, 1),
+                            ODD_Vitoria_TimeVisitante = RetornarOdd(this.Titulo_ResultadoFinal, 2),
+                            ODD_VitoriaOuEmpate_TimeCasa = RetornarOdd(this.Titulo_ChanceDupla, indice_VitoriaEmpateTimeDaCasa),
+                            ODD_VitoriaOuEmpate_TimeVisitante = RetornarOdd(this.Titulo_ChanceDupla, indice_VitoriaEmpateTimeVisitante),
                             LinkDaPartida = $"{Link_PaginaInicial}/pt-br/sports/eventos/{item.Participants.Find(p => p.Properties.Type == "HomeTeam").Name.Value}-{item.Participants.Find(p => p.Properties.Type == "AwayTeam").Name.Value}-{item.Id}",
                             Liga = LigaEmExecucao,
                             NomeDaCasaDeAposta = NomeDoSite

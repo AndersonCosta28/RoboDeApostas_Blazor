@@ -121,7 +121,7 @@ class Betway : CasaDeAposta
                         partida.DataCompleta = Funcoes.ConverterFusoHorario(new(ano, mes, dia, hora, minuto, 0, TimeSpan.Zero));
                         partida.NomeTimeDaCasa = item.HomeTeamName;
                         partida.NomeTimeVisitante = item.AwayTeamName;
-                        ListaDePartidas.Add(partida);
+                        this.ListaDePartidas.Add(partida);
                     }
                 }
                 catch(Exception){ throw; }

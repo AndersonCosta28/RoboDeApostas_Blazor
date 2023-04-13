@@ -115,6 +115,7 @@ class Sportsbet_IO : CasaDeAposta
                         NomeTimeVisitante = _event.Competitors.ToList().Find(m => m.Type == "away").Name,
                         DataCompleta = Funcoes.ConverterFusoHorario(DateTimeOffset.FromUnixTimeSeconds((long)_event.StartTime!))
                     };
+                    this.ListaDePartidas.Add(partida);
                 }
             })
         };

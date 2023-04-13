@@ -1,6 +1,7 @@
 ﻿@page "/Surebets"
 @inject DatabaseContext context
 @inject IToastService toastService
+@inject NavigationManager navigationManager
 
 <PageTitle>Surebet</PageTitle>
 <button class="btn btn-primary" @onclick="this.CalcularSurebets">Calcular Surebet</button>
@@ -12,7 +13,7 @@
             <th scope="col">Times</th>
             <th scope="col">Data</th>
             <th scope="col">Lucro</th>
-            <th scope="col">Link</th>
+            <th scope="col">Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -24,7 +25,7 @@
                 <td>@surebet2Casas.PartidaDaCasa1.NomeTimeDaCasa x @surebet2Casas.PartidaDaCasa1.NomeTimeVisitante</td>
                 <td>@surebet2Casas.Data</td>
                 <td>@Math.Round(surebet2Casas.Lucro, 2) %</td>
-                <td><a href="@surebet2Casas.PartidaDaCasa1.LinkDaPartida">Link1</a> | <a href="@surebet2Casas.PartidaDaCasa2.LinkDaPartida">Link2</a> </td>
+                <td><button class="btn btn-primary" @onclick="() => {this.NavegarParaATelaDeDetalhe2(surebet2Casas.Id);}">Visualizar</button></td>
             </tr>
         }
         @foreach (Surebet3Casas surebet3Casas in this.surebets3Casas)
@@ -35,7 +36,7 @@
                 <td>@surebet3Casas.PartidaDaCasa1.NomeTimeDaCasa x @surebet3Casas.PartidaDaCasa1.NomeTimeVisitante</td>
                 <td>@surebet3Casas.Data</td>
                 <td>@Math.Round(surebet3Casas.Lucro, 2) %</td>
-                <td><a href="@surebet3Casas.PartidaDaCasa1.LinkDaPartida">Link1</a> | <a href="@surebet3Casas.PartidaDaCasa2.LinkDaPartida">Link2</a> | <a href="@surebet3Casas.PartidaDaCasa3.LinkDaPartida">Link3</a> </td>
+                <td><button class="btn btn-primary" @onclick="() => {this.NavegarParaATelaDeDetalhe3(surebet3Casas.Id);}">Visualizar</button></td>
             </tr>
         }
     </tbody>
@@ -45,6 +46,11 @@
     private List<Partida> partidas = new();
     private List<Surebet2Casas> surebets2Casas = new();
     private List<Surebet3Casas> surebets3Casas = new();
+
+    public void NavegarParaATelaDeDetalhe2(int id) => navigationManager.NavigateTo($"/surebet-detail-2/{id}");
+    public void NavegarParaATelaDeDetalhe3(int id) => navigationManager.NavigateTo($"/surebet-detail-3/{id}");
+
+
     protected override void OnInitialized()
     {
         this.partidas = context.Partidas.ToList();
@@ -103,8 +109,9 @@
                 bool validacaoNomeDoTimeDaVisitante = validarNomeDoTime(partida1.NomeTimeVisitante, partida2.NomeTimeVisitante);
                 bool validacaoDataDoJogo = partida1.Data == partida2.Data;
                 bool validacaoDaLiga = partida1.Liga == partida2.Liga;
+                bool validacaoNomeDaCasaDeAposta = partida1.NomeDaCasaDeAposta == partida2.NomeDaCasaDeAposta;
 
-                if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante) continue;
+                if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante || validacaoNomeDaCasaDeAposta) continue;
                 double odd1 = CalcularOdd2Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_VitoriaOuEmpate_TimeVisitante);
                 double odd2 = CalcularOdd2Casas(partida1.ODD_VitoriaOuEmpate_TimeCasa, partida2.ODD_Vitoria_TimeVisitante);
                 double odd3 = CalcularOdd2Casas(partida1.ODD_VitoriaOuEmpate_TimeVisitante, partida2.ODD_Vitoria_TimeDaCasa);

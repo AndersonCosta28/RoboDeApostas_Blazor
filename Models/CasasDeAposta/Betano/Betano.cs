@@ -131,7 +131,7 @@ class Betano : CasaDeAposta
                     LinkDaPartida = item.Url.ToString(),
                     DataCompleta = Funcoes.ConverterFusoHorario((DateTimeOffset)item.StartDate!)
                 };
-                ListaDePartidas.Add(partida);
+                this.ListaDePartidas.Add(partida);
             }
             else
             {

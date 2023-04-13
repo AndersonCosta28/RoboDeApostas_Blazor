@@ -120,7 +120,7 @@ class SportingBet : CasaDeAposta
                             Liga = LigaEmExecucao,
                             NomeDaCasaDeAposta = NomeDoSite
                         };
-                        ListaDePartidas.Add(partida);
+                        this.ListaDePartidas.Add(partida);
                     }
                 }
                 catch(Exception){ throw; }

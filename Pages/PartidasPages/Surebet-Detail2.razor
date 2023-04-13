@@ -1,0 +1,25 @@
+﻿@page "/surebet-detail-2/{id}"
+@inject DatabaseContext context
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+    public Surebet2Casas Surebet { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        this.Surebet = await context.Surebet2Casas.Include(s => s.PartidaDaCasa1).Include(s => s.PartidaDaCasa2).Where(s => s.Id == int.Parse(id)).FirstOrDefaultAsync();
+    }
+}
+
+<h1>Surebet de 2 casas</h1>
+<div class="col-6">
+    <p>@Surebet.PartidaDaCasa1.NomeDaCasaDeAposta x @Surebet.PartidaDaCasa2.NomeDaCasaDeAposta</p>
+    <p>@Surebet.Data</p>
+    <p>P.1: V casa (@Surebet.PartidaDaCasa1.NomeDaCasaDeAposta) @Surebet.PartidaDaCasa1.ODD_Vitoria_TimeDaCasa.ToString("0.00") x V/E visitante (@Surebet.PartidaDaCasa2.NomeDaCasaDeAposta) @Surebet.PartidaDaCasa2.ODD_VitoriaOuEmpate_TimeVisitante.ToString("0.00") | Lucro: <span>@Surebet.Prob1.ToString("0.00") %</span></p>
+    <p>P.2: V/E casa (@Surebet.PartidaDaCasa1.NomeDaCasaDeAposta) @Surebet.PartidaDaCasa1.ODD_VitoriaOuEmpate_TimeCasa.ToString("0.00") x V time visitante (@Surebet.PartidaDaCasa2.NomeDaCasaDeAposta) @Surebet.PartidaDaCasa2.ODD_Vitoria_TimeVisitante.ToString("0.00") | Lucro: <span>@Surebet.Prob2.ToString("0.00") %</span></p>
+    <p>P.3: V/E visitante (@Surebet.PartidaDaCasa1.NomeDaCasaDeAposta) @Surebet.PartidaDaCasa1.ODD_VitoriaOuEmpate_TimeVisitante.ToString("0.00") x V casa (@Surebet.PartidaDaCasa2.NomeDaCasaDeAposta) @Surebet.PartidaDaCasa2.ODD_Vitoria_TimeDaCasa.ToString("0.00") | Lucro: <span>@Surebet.Prob3.ToString("0.00") %</span></p>
+    <p>P.4: V visitante (@Surebet.PartidaDaCasa1.NomeDaCasaDeAposta) @Surebet.PartidaDaCasa1.ODD_Vitoria_TimeVisitante.ToString("0.00")e x V/E casa (@Surebet.PartidaDaCasa2.NomeDaCasaDeAposta) @Surebet.PartidaDaCasa2.ODD_VitoriaOuEmpate_TimeCasa.ToString("0.00") | Lucro: <span>@Surebet.Prob4.ToString("0.00") %</span></p>
+    <p><a target="_blank" href="@Surebet.PartidaDaCasa1.LinkDaPartida">@Surebet.PartidaDaCasa1.NomeDaCasaDeAposta</a> | <a target="_blank" href="@Surebet.PartidaDaCasa2.LinkDaPartida">@Surebet.PartidaDaCasa2.NomeDaCasaDeAposta</a></p>
+</div>
+

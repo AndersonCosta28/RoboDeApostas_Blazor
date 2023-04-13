@@ -34,9 +34,9 @@ public partial class GetEventById
     [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
     public string Id { get; set; }
 
-    [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonConverter(typeof(ParseStringConverter))]
-    public long? Type { get; set; }
+    //[JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
+    //[JsonConverter(typeof(ParseStringConverter))]
+    //public long? Type { get; set; }
 
     [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
     public string Name { get; set; }
@@ -86,9 +86,9 @@ public partial class MainMarket
     [JsonProperty("enName", NullValueHandling = NullValueHandling.Ignore)]
     public string EnName { get; set; }
 
-    [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonConverter(typeof(ParseStringConverter))]
-    public long? Status { get; set; }
+    //[JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
+    //[JsonConverter(typeof(ParseStringConverter))]
+    //public long? Status { get; set; }
 
     [JsonProperty("selections", NullValueHandling = NullValueHandling.Ignore)]
     public Selection[] Selections { get; set; }
@@ -117,9 +117,9 @@ public partial class MarketType
     [JsonProperty("translation_key", NullValueHandling = NullValueHandling.Ignore)]
     public string TranslationKey { get; set; }
 
-    [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonConverter(typeof(ParseStringConverter))]
-    public long? Type { get; set; }
+    //[JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
+    //[JsonConverter(typeof(ParseStringConverter))]
+    //public long? Type { get; set; }
 
     [JsonProperty("settings")]
     public object Settings { get; set; }
@@ -154,13 +154,13 @@ public partial class Selection
 
 public partial class Specifiers
 {
-    [JsonProperty("hcp", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonConverter(typeof(ParseStringConverter))]
-    public long? Hcp { get; set; }
+    //[JsonProperty("hcp", NullValueHandling = NullValueHandling.Ignore)]
+    //[JsonConverter(typeof(ParseStringConverter))]
+    //public long? Hcp { get; set; }
 
-    [JsonProperty("hcp_for_the_rest", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonConverter(typeof(ParseStringConverter))]
-    public long? HcpForTheRest { get; set; }
+    //[JsonProperty("hcp_for_the_rest", NullValueHandling = NullValueHandling.Ignore)]
+    //[JsonConverter(typeof(ParseStringConverter))]
+    //public long? HcpForTheRest { get; set; }
 
     [JsonProperty("total", NullValueHandling = NullValueHandling.Ignore)]
     public string Total { get; set; }

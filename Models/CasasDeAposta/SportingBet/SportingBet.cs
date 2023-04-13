@@ -1,4 +1,4 @@
-using RoboDeApostas.Models.CasasDeAposta.SportingBetAPI.ResponseListaDePartida;
+using RoboDeApostas.Models.CasasDeAposta.SportingBetAPI.ListaDePartida;
 
 namespace RoboDeApostas.Models.CasasDeAposta;
 class SportingBet : CasaDeAposta
@@ -70,9 +70,7 @@ class SportingBet : CasaDeAposta
         Pagina = await Navegador.NewPageAsync(new BrowserNewPageOptions() { ExtraHTTPHeaders = ValoresParaInjetarNaPagina });
         try
         {
-            RobosEmExecucao.Add(this);
             SalvarLog($"Executando Robo em {NomeDoSite} e na liga {LigaEmExecucao}");
-            ListaDePartidas.Clear();
             await PreencherListaDePartidas(link);
             foreach (Partida partida in ListaDePartidas)
                 await SalvarPartidaNoBanco(partida);
@@ -84,9 +82,9 @@ class SportingBet : CasaDeAposta
         }
         finally
         {
-            RobosEmExecucao.Remove(this);
             await Pagina.CloseAsync();
             await Navegador.CloseAsync();
+            ListaDePartidas.Clear();
         }
     }
 
@@ -100,7 +98,7 @@ class SportingBet : CasaDeAposta
             {
                 try
                 {
-                    var response = await Pagina.WaitForResponseAsync(r => r.Url.Contains("widget"));
+                    var response = await this.Esperar3VezesPeloResponse(r => r.Url.Contains("widget"));
                     var json = await response.TextAsync();
                     var data = ResponseListaDePartida.FromJson(json);
                     var widget = data.Widgets.Find(i => i.Type == "Composable");

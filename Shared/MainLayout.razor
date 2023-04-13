@@ -5,15 +5,20 @@
     <div class="sidebar">
         <NavMenu />
     </div>
-
     <main>
+
         <div class="top-row px-4">
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
 
         <article class="content px-4">
-            @Body
+            <CascadingValue Value="casas"> 
+                @Body
+            </CascadingValue>
         </article>
     </main>
     <BlazoredToasts />
 </div>
+@code {
+    private List<CasaDeAposta> casas = new() { new Betano(), new Betway(), new Betfair(), new Bet365(), new SportingBet(), new Sportsbet_IO() };
+}

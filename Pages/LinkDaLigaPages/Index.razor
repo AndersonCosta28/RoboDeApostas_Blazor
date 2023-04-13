@@ -2,12 +2,6 @@
 @inject DatabaseContext context
 @inject NavigationManager NavigationManager
 @inject DatabaseContext context
-@inject Bet365 bet365
-@inject Betway betway
-@inject Betano betano
-@inject Sportsbet_IO sportsbet_IO
-@inject SportingBet sportingBet
-@inject Betfair betfair
 
 <h3>Link das Ligas</h3>
 <h4>Quantidade de links: @links.Count</h4>
@@ -48,6 +42,8 @@
     private List<LinkDaLiga> links;
     private string link = "/linkDaLiga/create";
     private string textoDePesquisa = "";
+    [CascadingParameter]
+    List<CasaDeAposta> casas { get; set; }
     protected override Task OnInitializedAsync()
     {
         this.links = context.LinkDaLiga.Include(l => l.Liga).ToList();

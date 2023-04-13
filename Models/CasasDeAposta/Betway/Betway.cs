@@ -106,7 +106,7 @@ class Betway : CasaDeAposta
             {
                 try
                 {
-                    var resposta = await Pagina.WaitForResponseAsync(r => r.Url.Contains("https://betway.com/api/Events/v2/GetEvents"));
+                    var resposta = await this.Esperar3VezesPeloResponse(r => r.Url.Contains("https://betway.com/api/Events/v2/GetEvents"),2,2);
                     string json = await resposta.TextAsync();
                     var data = ResponseListaDePartida.FromJson(json);
                     foreach (var item in data.Events)
@@ -130,7 +130,6 @@ class Betway : CasaDeAposta
         await Task.WhenAll(tasks);
     }
 
-
     protected override async Task PreencherDetalhesDaPartida_RequestAsync(Partida partida)
     {
         List<Task> tasks = new()
@@ -140,7 +139,7 @@ class Betway : CasaDeAposta
             {
                 try
                 {
-                    var resposta = await Pagina.WaitForResponseAsync("https://betway.com/api/Events/v2/GetEventDetails");
+                    var resposta = await this.Esperar3VezesPeloResponse(r => r.Url.Contains("https://betway.com/api/Events/v2/GetEventDetails"), 2, 2);
                     string json = await resposta.TextAsync();
                     var data = ResponseDetalheDaPartida.FromJson(json);
 
@@ -165,9 +164,7 @@ class Betway : CasaDeAposta
         Pagina = await Navegador.NewPageAsync(new BrowserNewPageOptions() { ExtraHTTPHeaders = ValoresParaInjetarNaPagina });
         try
         {
-            RobosEmExecucao.Add(this);
             SalvarLog($"Executando Robo em {NomeDoSite} e na liga {LigaEmExecucao}");
-            ListaDePartidas.Clear();
             await PreencherListaDePartidas(link);
             foreach (Partida partida in ListaDePartidas)
             {
@@ -181,9 +178,9 @@ class Betway : CasaDeAposta
         }
         finally
         {
-            RobosEmExecucao.Remove(this);
             await Pagina.CloseAsync();
             await Navegador.CloseAsync();
+            ListaDePartidas.Clear();
         }
     }
 }

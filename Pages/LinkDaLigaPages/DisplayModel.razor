@@ -8,7 +8,7 @@
     <label for="casadeaposta">Casa de aposta:</label>
     <select id="casadeaposta" @onchange="SelectedChangedCasa" required>
         <option selected>Selecione um</option>
-        @foreach (CasaDeAposta casa in CasaDeAposta.CasasDeAposta)
+        @foreach (CasaDeAposta casa in casas)
         {
             if (casa.NomeDoSite == this.linkDaLiga.CasaDeAposta)
             {
@@ -41,6 +41,8 @@
 @code {
     [Parameter]
     public LinkDaLiga linkDaLiga { get; set; }
+    [CascadingParameter]
+    List<CasaDeAposta> casas { get; set; }
     private List<Liga> ligas = new();
 
     protected override void OnInitialized()

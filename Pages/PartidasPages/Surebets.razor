@@ -64,7 +64,6 @@
         {
             foreach (var partidaAgrupada2 in partidasAgrupadas)
             {
-                @* Console.WriteLine($"{i} - {j}"); *@
                 if (i >= j)
                 {
                     j++;
@@ -81,10 +80,10 @@
                         l++;
                         continue;
                     }
+
                     List<Partida> partidas3 = partidaAgrupada3.ToList();
                     this.SepararPartidasValidasDe3CasasDeAposta(partidas1, partidas2, partidas3);
                 }
-
             }
             i++;
         }
@@ -137,7 +136,8 @@
                 bool validacaoNomeDoTimeDaVisitante = validarNomeDoTime(partida1.NomeTimeVisitante, partida2.NomeTimeVisitante);
                 bool validacaoDataDoJogo = partida1.Data == partida2.Data;
                 bool validacaoDaLiga = partida1.Liga == partida2.Liga;
-                if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante) continue;
+                bool validacaoNomeDaCasaDeAposta = partida1.NomeDaCasaDeAposta == partida2.NomeDaCasaDeAposta;
+                if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante || validacaoNomeDaCasaDeAposta) continue;
 
                 foreach (Partida partida3 in partidas3)
                 {
@@ -145,7 +145,8 @@
                     validacaoNomeDoTimeDaVisitante = validarNomeDoTime(partida1.NomeTimeVisitante, partida3.NomeTimeVisitante);
                     validacaoDataDoJogo = partida1.Data == partida3.Data;
                     validacaoDaLiga = partida1.Liga == partida3.Liga;
-                    if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante) continue;
+                    validacaoNomeDaCasaDeAposta = partida1.NomeDaCasaDeAposta == partida3.NomeDaCasaDeAposta || partida2.NomeDaCasaDeAposta == partida3.NomeDaCasaDeAposta;
+                    if (!validacaoDataDoJogo || !validacaoDaLiga || !validacaoNomeDoTimeDaCasa || !validacaoNomeDoTimeDaVisitante || validacaoNomeDaCasaDeAposta) continue;
                     double odd1 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_Vitoria_TimeVisitante, partida3.ODD_Empate_Ambos);
                     double odd2 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeDaCasa, partida2.ODD_Empate_Ambos, partida3.ODD_Vitoria_TimeVisitante);
                     double odd3 = CalcularOdd3Casas(partida1.ODD_Vitoria_TimeVisitante, partida2.ODD_Vitoria_TimeDaCasa, partida3.ODD_Empate_Ambos);
@@ -158,6 +159,7 @@
                         {
                             PartidaDaCasa1 = partida1,
                             PartidaDaCasa2 = partida2,
+                            PartidaDaCasa3 = partida3,
                             Data = partida1.DataCompleta,
                             Prob1 = odd1,
                             Prob2 = odd2,

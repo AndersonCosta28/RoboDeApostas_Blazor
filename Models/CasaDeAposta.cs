@@ -1,14 +1,14 @@
 using System.Text.Unicode;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.HttpResults;
+
 namespace RoboDeApostas.Models;
 
 public abstract class CasaDeAposta
 {
     #region Campos estáticos
-    public static bool AbrirNavegador = false;
-    public static List<CasaDeAposta> CasasDeAposta = new();
-    public static List<CasaDeAposta> RobosEmExecucao = new();
+    public static bool AbrirNavegador;
     #endregion
 
     #region Campos
@@ -68,7 +68,7 @@ public abstract class CasaDeAposta
         ValoresParaInjetarNaPagina.Add("Sec-Fetch-Dest", "empty");
         ValoresParaInjetarNaPagina.Add("DNT", "1");
         ValoresParaInjetarNaPagina.Add("Origin", Link_PaginaInicial);
-        CasasDeAposta.Add(this);
+        //CasasDeAposta.Add(this);
     }
     protected abstract void Configurar();
 
@@ -76,7 +76,7 @@ public abstract class CasaDeAposta
     {
         using var db = new DatabaseContext();
         var link = db.LinkDaLiga.Where(lk => lk.CasaDeAposta == this.NomeDoSite).Select(lk => new { lk.Link, Liga = lk.Liga.Nome }).ToList();
-        foreach ( var lk in link )
+        foreach (var lk in link)
         {
             this.LigaEmExecucao = lk.Liga;
             await this.RodarPadraoAsync(lk.Link);
@@ -86,22 +86,18 @@ public abstract class CasaDeAposta
 
     public virtual async Task RodarPadraoAsync(string link)
     {
-        //using var db = new DatabaseContext();
-        //db.Partidas.AddRange(this.ListaDePartidas);
-        //db.SaveChanges();
-        //var playwright = await Playwright.CreateAsync();
-        //IBrowser navegador = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions() { Headless = !AbrirNavegador, Devtools = false });
-        //try
-        //{
-        //    this.Navegador = navegador;
-        //    RobosEmExecucao.Add(this);
-        //    await this.PegarOsJogosCorrentesAsync(link);
-        //}
-        //finally
-        //{
-        //    RobosEmExecucao.Remove(this);
-        //    await navegador.CloseAsync();
-        //}
+        var playwright = await Playwright.CreateAsync();
+        IBrowser navegador = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions() { Headless = !AbrirNavegador, Devtools = false });
+        this.Navegador = navegador;
+        try
+        {
+            SalvarLog($"Executando Robo em {NomeDoSite} e na liga {LigaEmExecucao}");
+            await this.PegarOsJogosCorrentesAsync(link);
+        }
+        finally
+        {
+            await navegador.CloseAsync();
+        }
     }
     #endregion
 
@@ -158,7 +154,6 @@ public abstract class CasaDeAposta
                     await this.SalvarPartidaNoBanco(partida);
                 }
             }
-
             ListaDePartidas.AddRange(partidas);
         }
         catch (Exception e)
@@ -283,29 +278,30 @@ public abstract class CasaDeAposta
 
     protected async virtual Task PreencherListaDePartidas(string link) { }
 
+    protected async virtual Task<IResponse> Esperar3VezesPeloResponse(Func<IResponse, bool> acaoDeFiltrarOResponse, float tempoParaAguardarAntesDeExecutar = 0, float tempoParaAguardarDepoisDeAtualizarAPagina = 0)
+    {
+        sbyte i = 3;
+        while (true)
+        {
+            try
+            {
+                await this.Pagina.WaitForTimeoutAsync(tempoParaAguardarAntesDeExecutar * 1000);
+                return await this.Pagina.WaitForResponseAsync(r => acaoDeFiltrarOResponse(r));
+            }
+            catch (Exception e)
+            {
+                if (i < 0) throw;
+                this.SalvarLog($"Executando tentativa {i} no site {this.NomeDoSite} e na liga {this.LigaEmExecucao} -> {e.Message}");
+                await this.Pagina.ReloadAsync(new PageReloadOptions() { Timeout = 0 });
+                await this.Pagina.WaitForTimeoutAsync(tempoParaAguardarDepoisDeAtualizarAPagina * 1000);
+                i--;
+            }
+        }
+    }
+
     #endregion
 
     #region Funções de operação
-    public static void CalcularOdds()
-    {
-        var casa1 = CasasDeAposta[0];
-        var casa2 = CasasDeAposta[1];
-        Console.WriteLine($"Quantidade de partidas capturados de {casa1.NomeDoSite} é {casa1.ListaDePartidas.Count}");
-        Console.WriteLine($"Quantidade de partidas capturados de {casa2.NomeDoSite} é {casa2.ListaDePartidas.Count}");
-        int quantidadesDeJogosDaCasa1 = casa1.ListaDePartidas.Count;
-        int quantidadesDeJogosDaCasa2 = casa2.ListaDePartidas.Count;
-        int quantidadeParaIterar = Math.Min(quantidadesDeJogosDaCasa1, quantidadesDeJogosDaCasa2);
-        for (int i = 0; i < quantidadeParaIterar; i++)
-        {
-            Console.WriteLine($"-- Jogo {i} -- " + $"{casa1.ListaDePartidas[i].NomeTimeDaCasa} x {casa1.ListaDePartidas[i].NomeTimeVisitante}" + " / " + $"{casa2.ListaDePartidas[i].NomeTimeDaCasa} x {casa2.ListaDePartidas[i].NomeTimeVisitante}");
-            var calcularOdd1 = 100 / casa1.ListaDePartidas[i].ODD_Vitoria_TimeDaCasa + 100 / casa2.ListaDePartidas[i].ODD_VitoriaOuEmpate_TimeVisitante;
-            var calcularOdd2 = 100 / casa1.ListaDePartidas[i].ODD_Vitoria_TimeVisitante + 100 / casa2.ListaDePartidas[i].ODD_VitoriaOuEmpate_TimeCasa;
-            if (calcularOdd1 < 100) Console.WriteLine($"Vitoria da casa e Vitória ou Empate do visitante -> {calcularOdd1}");
-            if (calcularOdd2 < 100) Console.WriteLine($"Vitoria do visitante e Vitória ou Empate da casa -> {calcularOdd2}");
-            Console.WriteLine($"{casa1.ListaDePartidas[i].DataCompleta} / {casa2.ListaDePartidas[i].DataCompleta}");
-            Console.WriteLine($"----");
-        }
-    }
 
     public async Task SalvarEmJsonAsync()
     {

@@ -34,11 +34,13 @@
 </table>
 @code {
     private string textoDePesquisa = "";
-    private List<Partida> partidas;
+    private List<Partida> partidas = new();
 
     protected override void OnInitialized()
     {
+        this.partidas.Clear();
         this.partidas = context.Partidas.ToList();
+        //GC.Collect(2, GCCollectionMode.Forced);
     }
 }
 

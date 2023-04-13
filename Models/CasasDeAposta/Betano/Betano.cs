@@ -1,4 +1,4 @@
-using RoboDeApostas.Models.CasasDeAposta.SportingBetAPI.ResponseListaDePartida;
+using RoboDeApostas.Models.CasasDeAposta.SportingBetAPI.ListaDePartida;
 using RoboDeApostas.Utils;
 
 namespace RoboDeApostas.Models.CasasDeAposta;
@@ -123,6 +123,7 @@ class Betano : CasaDeAposta
             else if (json[0] == '{')
             {
                 var item = BetanoAPI.ListaDePartida.ResponseListaDePartida.FromJson(json);
+                if (item.HomeTeam == null || item.AwayTeam == null) return;
                 Partida partida = new(item.Url.ToString(), LigaEmExecucao, NomeDoSite)
                 {
                     NomeTimeDaCasa = item.HomeTeam.Name,
@@ -160,9 +161,7 @@ class Betano : CasaDeAposta
     {
         try
         {
-            RobosEmExecucao.Add(this);
-            SalvarLog($"Executando Robo em {NomeDoSite} e na liga {LigaEmExecucao}");
-            ListaDePartidas.Clear();
+            SalvarLog($"Executando Robo em {NomeDoSite} e na liga {LigaEmExecucao}");            
             await PreencherListaDePartidas(link);
             foreach (Partida partida in ListaDePartidas)
             {
@@ -176,7 +175,7 @@ class Betano : CasaDeAposta
         }
         finally
         {
-            RobosEmExecucao.Remove(this);
+            ListaDePartidas.Clear();
         }
     }
 }

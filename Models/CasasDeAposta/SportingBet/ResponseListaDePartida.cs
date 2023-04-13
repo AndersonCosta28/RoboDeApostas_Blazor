@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-namespace RoboDeApostas.Models.CasasDeAposta.SportingBetAPI.ResponseListaDePartida
+namespace RoboDeApostas.Models.CasasDeAposta.SportingBetAPI.ListaDePartida
 {
     public partial class ResponseListaDePartida
     {

@@ -1,0 +1,9 @@
+bin
+logs
+obj
+out
+database
+.vscode
+*.png
+*.env
+Resultados

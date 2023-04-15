@@ -23,7 +23,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (LinkDaLiga link in this.links.Where(l => l.CasaDeAposta.ToLower().Contains(this.textoDePesquisa.ToLower()) || l.Liga.Nome.ToLower().Contains(textoDePesquisa.ToLower())))
+        @foreach (LinkDaLiga link in this.links.Where(l => l.CasaDeAposta.RemoverAcentuacao().ToLower().Contains(this.textoDePesquisa.RemoverAcentuacao().ToLower()) || l.Liga.Nome.RemoverAcentuacao().ToLower().Contains(textoDePesquisa.RemoverAcentuacao().ToLower())))
         {
             int id = link.Id;
             <tr>

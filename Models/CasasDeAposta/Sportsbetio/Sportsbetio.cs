@@ -148,18 +148,23 @@ class Sportsbet_IO : CasaDeAposta
 
 
                 var data = ResponseDetalheDaPartida.FromJson(json).Data.SportsbetNewGraphql.GetEventById;
-                double RetornarOdd(List<string> titulos, int indice){
+                double RetornarOdd(List<string> titulos, string textoParaPesquisa){
                     MainMarket? opcaoDeAposta = data.MainMarkets.ToList().Find(m => titulos.Contains(m.Name));
                     if (opcaoDeAposta == null) return 0;
-                    if (opcaoDeAposta.Selections.Count() - 1 < indice) return 0;
-                    return opcaoDeAposta.Selections[indice].Odds ?? 0;
+                    List<SportsbetioAPI.DetalheDaPartida.Selection> selections = opcaoDeAposta.Selections.ToList();
+                    SportsbetioAPI.DetalheDaPartida.Selection? selection = selections.Find(s => s.Name.Contains(textoParaPesquisa));
+                    if (selection == null) return 0;
+                    else return selection.Odds ?? 0;
+                    //if (opcaoDeAposta.Selections.Count() < 3) return 0;
+                    //if (opcaoDeAposta.Selections.Count() - 1 < indice) return 0;
+                    //return opcaoDeAposta.Selections[indice].Odds ?? 0;
                 }
                 
-                partida.ODD_Vitoria_TimeDaCasa = RetornarOdd(this.Titulo_ResultadoFinal, 0);
-                partida.ODD_Empate_Ambos = RetornarOdd(this.Titulo_ResultadoFinal, 1);
-                partida.ODD_Vitoria_TimeVisitante = RetornarOdd(this.Titulo_ResultadoFinal, 2);
-                partida.ODD_VitoriaOuEmpate_TimeCasa = RetornarOdd(this.Titulo_ChanceDupla, indice_VitoriaEmpateTimeDaCasa);
-                partida.ODD_VitoriaOuEmpate_TimeVisitante = RetornarOdd(this.Titulo_ChanceDupla, indice_VitoriaEmpateTimeVisitante);
+                partida.ODD_Vitoria_TimeDaCasa = RetornarOdd(this.Titulo_ResultadoFinal, partida.NomeTimeDaCasa);
+                partida.ODD_Empate_Ambos = RetornarOdd(this.Titulo_ResultadoFinal, partida.NomeTimeVisitante);
+                partida.ODD_Vitoria_TimeVisitante = RetornarOdd(this.Titulo_ResultadoFinal, "Empate");
+                partida.ODD_VitoriaOuEmpate_TimeCasa = RetornarOdd(this.Titulo_ChanceDupla, $"{partida.NomeTimeDaCasa} ou empate");
+                partida.ODD_VitoriaOuEmpate_TimeVisitante = RetornarOdd(this.Titulo_ChanceDupla, $"Empate ou {partida.NomeTimeVisitante}");
             })
         };
         await Task.WhenAll(tasks);

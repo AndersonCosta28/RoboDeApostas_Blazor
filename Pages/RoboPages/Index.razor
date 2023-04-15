@@ -45,7 +45,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (LinkDaLiga link in this.links.Where(l => l.CasaDeAposta.ToLower().Contains(this.textoDePesquisa.ToLower()) || l.Liga.Nome.ToLower().Contains(textoDePesquisa.ToLower())))
+        @foreach (LinkDaLiga link in this.links.Where(l => l.CasaDeAposta.ToLower().RemoverAcentuacao().Contains(this.textoDePesquisa.ToLower().RemoverAcentuacao()) || l.Liga.Nome.ToLower().RemoverAcentuacao().Contains(textoDePesquisa.RemoverAcentuacao().ToLower())))
         {
             <tr>
                 <td>@link.CasaDeAposta</td>
@@ -79,6 +79,8 @@
                 {
                     try
                     {
+                        List<Partida> partidasParaRemover = context.Partidas.Where(p => p.NomeDaCasaDeAposta == casa.NomeDoSite && p.Liga == liga).ToList();
+                        context.Partidas.RemoveRange(partidasParaRemover);
                         string robo = $"{casa.NomeDoSite} - {liga}";
                         casa.LigaEmExecucao = liga;
                         RobosEmExecucao.Add(casa);
@@ -103,6 +105,8 @@
             {
                 try
                 {
+                    List<Partida> partidasParaRemover = context.Partidas.Where(p => p.NomeDaCasaDeAposta == casa.NomeDoSite).ToList();
+                    context.Partidas.RemoveRange(partidasParaRemover);
                     RobosEmExecucao.Add(casa);
                     await casa.RodarPadraoAsync();
                 }
@@ -126,6 +130,8 @@
         {
             try
             {
+                List<Partida> partidasParaRemover = context.Partidas.Where(p => p.NomeDaCasaDeAposta == casa.NomeDoSite).ToList();
+                context.Partidas.RemoveRange(partidasParaRemover);
                 RobosEmExecucao.Add(casa);
                 await casa.RodarPadraoAsync();
             }
@@ -151,6 +157,8 @@
         }
         try
         {
+            List<Partida> partidasParaRemover = context.Partidas.Where(p => p.NomeDaCasaDeAposta == nomeDaCasa).ToList();
+            context.Partidas.RemoveRange(partidasParaRemover);
             RobosEmExecucao.Add(casa);
             await casa.RodarPadraoAsync();
         }

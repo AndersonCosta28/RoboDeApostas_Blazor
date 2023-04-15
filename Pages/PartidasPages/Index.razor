@@ -19,7 +19,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (Partida partida in this.partidas.Where(p => p.NomeDaCasaDeAposta.ToLower().Contains(this.textoDePesquisa.ToLower()) || p.Liga.ToLower().Contains(textoDePesquisa.ToLower()) || p.NomeTimeDaCasa.ToLower().Contains(textoDePesquisa.ToLower()) || p.NomeTimeVisitante.ToLower().Contains(textoDePesquisa.ToLower()) || p.Data.Contains(textoDePesquisa)))
+        @foreach (Partida partida in this.partidas.Where(p => p.NomeDaCasaDeAposta.RemoverAcentuacao().ToLower().Contains(this.textoDePesquisa.RemoverAcentuacao().ToLower()) || p.Liga.RemoverAcentuacao().ToLower().Contains(textoDePesquisa.RemoverAcentuacao().ToLower()) || p.NomeTimeDaCasa.RemoverAcentuacao().ToLower().Contains(textoDePesquisa.RemoverAcentuacao().ToLower()) || p.NomeTimeVisitante.RemoverAcentuacao().ToLower().Contains(textoDePesquisa.RemoverAcentuacao().ToLower()) || p.Data.Contains(textoDePesquisa)))
         {
             <tr>
                 <td>@partida.NomeDaCasaDeAposta</td>

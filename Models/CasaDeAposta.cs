@@ -339,18 +339,19 @@ public abstract class CasaDeAposta
     protected async Task SalvarPartidaNoBanco(Partida partida)
     {
         using var db = new DatabaseContext();
-        Partida? _partida = await db.Partidas.Where(p => p.NomeDaCasaDeAposta == this.NomeDoSite && p.NomeTimeDaCasa == partida.NomeTimeDaCasa && p.NomeTimeVisitante == partida.NomeTimeVisitante && p.DataCompleta == partida.DataCompleta).FirstOrDefaultAsync();
-        if (_partida == null)
-        {
-            await db.Partidas.AddAsync(partida);
-        }
-        else
-        {
-            partida.Id = _partida.Id;
-            db.Entry(_partida).State = EntityState.Detached;
-            db.Entry(partida).State = EntityState.Modified;
-            db.Partidas.Update(partida);
-        }
+        await db.Partidas.AddAsync(partida);
+        //Partida? _partida = await db.Partidas.Where(p => p.NomeDaCasaDeAposta == this.NomeDoSite && p.NomeTimeDaCasa == partida.NomeTimeDaCasa && p.NomeTimeVisitante == partida.NomeTimeVisitante && p.DataCompleta == partida.DataCompleta).FirstOrDefaultAsync();
+        //if (_partida == null)
+        //{
+        //await db.Partidas.AddAsync(partida);
+        //}
+        //else
+        //{
+        //    partida.Id = _partida.Id;
+        //    db.Entry(_partida).State = EntityState.Detached;
+        //    db.Entry(partida).State = EntityState.Modified;
+        //    db.Partidas.Update(partida);
+        //}
 
         await db.SaveChangesAsync();
     }

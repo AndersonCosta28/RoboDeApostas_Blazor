@@ -12,11 +12,11 @@
         {
             if (casa.NomeDoSite == this.linkDaLiga.CasaDeAposta)
             {
-                <option selected value="@casa.NomeDoSite">@casa.NomeDoSite</option>
+                <option selected value="@casa.NomeDoSite.RemoverAcentuacao()">@casa.NomeDoSite</option>
             }
             else
             {
-                <option value="@casa.NomeDoSite">@casa.NomeDoSite</option>
+                <option value="@casa.NomeDoSite.RemoverAcentuacao()">@casa.NomeDoSite</option>
             }
         }
     </select>
@@ -29,11 +29,11 @@
         {
             if (liga.Id == this.linkDaLiga.LigaId)
             {
-                <option selected value="@liga.Id">@liga.Nome</option>
+                <option selected value="@liga.Id">@liga.Nome.RemoverAcentuacao()</option>
             }
             else
             {
-                <option value="@liga.Id">@liga.Nome</option>
+                <option value="@liga.Id">@liga.Nome.RemoverAcentuacao()</option>
             }
         }
     </select>

@@ -19,7 +19,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (Liga liga in this.ligas.Where(l => l.Nome.ToLower().Contains(textoDePesquisa.ToLower())))
+        @foreach (Liga liga in this.ligas.Where(l => l.Nome.ToLower().RemoverAcentuacao().Contains(textoDePesquisa.RemoverAcentuacao().ToLower())))
         {
             int id = liga.Id;
             <tr>

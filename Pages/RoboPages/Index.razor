@@ -74,27 +74,28 @@
         if (RobosEmExecucao.Exists(c => c.NomeDoSite == casaDeAposta/* && c.LigaEmExecucao == liga*/))
             toastService.ShowError("Já existe uma execução para essa casa de aposta, aguarde finalizar");
         else
-            foreach (CasaDeAposta casa in casas)
-                if (casaDeAposta == casa.NomeDoSite)
+        {
+            CasaDeAposta casa = this.casas.Find(c => c.NomeDoSite == casaDeAposta);
+            if (casa != null)
+                try
                 {
-                    try
-                    {
-                        List<Partida> partidasParaRemover = context.Partidas.Where(p => p.NomeDaCasaDeAposta == casa.NomeDoSite && p.Liga == liga).ToList();
-                        context.Partidas.RemoveRange(partidasParaRemover);
-                        string robo = $"{casa.NomeDoSite} - {liga}";
-                        casa.LigaEmExecucao = liga;
-                        RobosEmExecucao.Add(casa);
-                        await casa.RodarPadraoAsync(link);
-                    }
-                    catch (System.Exception e)
-                    {
-                        toastService.ShowError(e.Message);
-                    }
-                    finally
-                    {
-                        RobosEmExecucao.Remove(casa);
-                    }
+                    List<Partida> partidasParaRemover = context.Partidas.Where(p => p.NomeDaCasaDeAposta == casa.NomeDoSite && p.Liga == liga).ToList();
+                    context.Partidas.RemoveRange(partidasParaRemover);
+                    context.SaveChanges();
+                    string robo = $"{casa.NomeDoSite} - {liga}";
+                    casa.LigaEmExecucao = liga;
+                    RobosEmExecucao.Add(casa);
+                    await casa.RodarPadraoAsync(link);
                 }
+                catch (System.Exception e)
+                {
+                    toastService.ShowError(e.Message);
+                }
+                finally
+                {
+                    RobosEmExecucao.Remove(casa);
+                }
+        }
     }
 
     public async Task ExecutarTodosOsRobosParalelamente()
@@ -107,6 +108,7 @@
                 {
                     List<Partida> partidasParaRemover = context.Partidas.Where(p => p.NomeDaCasaDeAposta == casa.NomeDoSite).ToList();
                     context.Partidas.RemoveRange(partidasParaRemover);
+                    context.SaveChanges();
                     RobosEmExecucao.Add(casa);
                     await casa.RodarPadraoAsync();
                 }
@@ -132,6 +134,7 @@
             {
                 List<Partida> partidasParaRemover = context.Partidas.Where(p => p.NomeDaCasaDeAposta == casa.NomeDoSite).ToList();
                 context.Partidas.RemoveRange(partidasParaRemover);
+                context.SaveChanges();
                 RobosEmExecucao.Add(casa);
                 await casa.RodarPadraoAsync();
             }
@@ -159,6 +162,7 @@
         {
             List<Partida> partidasParaRemover = context.Partidas.Where(p => p.NomeDaCasaDeAposta == nomeDaCasa).ToList();
             context.Partidas.RemoveRange(partidasParaRemover);
+            context.SaveChanges();
             RobosEmExecucao.Add(casa);
             await casa.RodarPadraoAsync();
         }

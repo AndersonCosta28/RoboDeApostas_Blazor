@@ -102,7 +102,7 @@ class Sportsbet_IO : CasaDeAposta
             await Pagina.GotoAsync(link, new PageGotoOptions() { Timeout = 0 });
         }),
             Task.Run(async () =>
-            {                
+            {
                 var response = await this.Esperar3VezesPeloResponse((r) => r.Url.Contains("https://sportsbet.io/graphql") && r.Request.Method == "POST" && r.Request.PostData.Contains("tournamentId"));
                 var json = await response.TextAsync();
                 var data = ResponseListaDePartida.FromJson(json);
@@ -133,8 +133,8 @@ class Sportsbet_IO : CasaDeAposta
             Task.Run(async () =>
             {
                 var response = await this.Esperar3VezesPeloResponse((r) => r.Url.Contains("https://sportsbet.io/graphql") && r.Request.Method == "POST" && r.Request.PostData.Contains("MainMarketsQuery"), 2, 2);
-                
-                string json = await response.TextAsync();     
+
+                string json = await response.TextAsync();
                 string regex1 = (@"{(!|\$)(.*?)}|({from})|({to}|{hcp})");
                 string regex2 = ("\"{");
                 string regex3 = ("}\"");
@@ -155,11 +155,8 @@ class Sportsbet_IO : CasaDeAposta
                     SportsbetioAPI.DetalheDaPartida.Selection? selection = selections.Find(s => s.Name.Contains(textoParaPesquisa));
                     if (selection == null) return 0;
                     else return selection.Odds ?? 0;
-                    //if (opcaoDeAposta.Selections.Count() < 3) return 0;
-                    //if (opcaoDeAposta.Selections.Count() - 1 < indice) return 0;
-                    //return opcaoDeAposta.Selections[indice].Odds ?? 0;
                 }
-                
+
                 partida.ODD_Vitoria_TimeDaCasa = RetornarOdd(this.Titulo_ResultadoFinal, partida.NomeTimeDaCasa);
                 partida.ODD_Empate_Ambos = RetornarOdd(this.Titulo_ResultadoFinal, partida.NomeTimeVisitante);
                 partida.ODD_Vitoria_TimeVisitante = RetornarOdd(this.Titulo_ResultadoFinal, "Empate");

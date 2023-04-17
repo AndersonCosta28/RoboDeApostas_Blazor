@@ -110,7 +110,7 @@ class SportingBet : CasaDeAposta
                             OptionMarket? opcaoDeAposta = item.OptionMarkets.ToList().Find(o => titulos.Contains(o.Name.Value));
                             return opcaoDeAposta != null ? opcaoDeAposta.Options[indice].Price.Odds ?? 0 : 0;
                         }
-                        Partida partida = new Partida()
+                        Partida partida = new()
                         {
                             NomeTimeDaCasa = item.Participants.Find(p => p.Properties.Type == "HomeTeam").Name.Value,
                             NomeTimeVisitante = item.Participants.Find(p => p.Properties.Type == "AwayTeam").Name.Value,
@@ -124,6 +124,7 @@ class SportingBet : CasaDeAposta
                             Liga = LigaEmExecucao,
                             NomeDaCasaDeAposta = NomeDoSite
                         };
+                        if (partida.DataCompleta < DateTimeOffset.Now) continue;
                         this.ListaDePartidas.Add(partida);
                     }
                 }

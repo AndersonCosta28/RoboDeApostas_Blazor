@@ -6,6 +6,9 @@
     <div class="col-4">
         <input type="search" placeholder="Pesquisar" @bind="this.textoDePesquisa" />
     </div>
+    <div class="col-4">
+        <button class="btn btn-primary" @onclick="this.RemoverPartidasAntigas">Remover partidas antigas</button>
+    </div>
 </div>
 <table class="table" style="width: 100%">
     <thead>
@@ -41,6 +44,13 @@
         this.partidas.Clear();
         this.partidas = context.Partidas.ToList();
         //GC.Collect(2, GCCollectionMode.Forced);
+    }
+
+    public void RemoverPartidasAntigas()
+    {
+        List<Partida> partidasAntigas = this.context.Partidas.ToList().Where(p => p.DataCompleta < DateTimeOffset.Now).ToList();
+        this.context.Partidas.RemoveRange(partidasAntigas);
+        this.context.SaveChanges();
     }
 }
 

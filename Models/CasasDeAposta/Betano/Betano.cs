@@ -1,6 +1,3 @@
-using RoboDeApostas.Models.CasasDeAposta.SportingBetAPI.ListaDePartida;
-using RoboDeApostas.Utils;
-
 namespace RoboDeApostas.Models.CasasDeAposta;
 class Betano : CasaDeAposta
 {
@@ -75,19 +72,29 @@ class Betano : CasaDeAposta
 
             //string json = htmlDoc.DocumentNode.SelectSingleNode("/html/body/script[1]").InnerText.Replace("window[\"initial_state\"]=", "").Trim();
             var data = BetanoAPI.DetalheDaPartida.ResponseDetalheDaPartida.FromJson(html).Data.Event;
+            
+            double RetornarOdd(List<string> titulos, string textoParaPesquisa){
+                if (data == null) return 0;
+                BetanoAPI.DetalheDaPartida.PurpleMarket? opcaoDeAposta = data.Markets.ToList().Find(m => titulos.Contains(m.Name));
+                if (opcaoDeAposta == null) return 0;
+                List<BetanoAPI.DetalheDaPartida.Selection> selections = opcaoDeAposta.Selections.ToList();
+                BetanoAPI.DetalheDaPartida.Selection? selection = selections.Find(s => s.Name.Contains(textoParaPesquisa));
+                if (selection == null) return 0;
+                else return selection.Price ?? 0;
+            }
             if (data.LiveNow ?? false)
             {
                 return;
             }
-            partida.ODD_Vitoria_TimeDaCasa = data.Markets.Where(m => Titulo_ResultadoFinal.Contains(m.Name)).ToList()[0].Selections[0].Price ?? 0;
-            partida.ODD_Empate_Ambos = data.Markets.Where(m => Titulo_ResultadoFinal.Contains(m.Name)).First().Selections[1].Price ?? 0;
-            partida.ODD_Vitoria_TimeVisitante = data.Markets.Where(m => Titulo_ResultadoFinal.Contains(m.Name)).First().Selections[2].Price ?? 0;
-            partida.ODD_VitoriaOuEmpate_TimeCasa = data.Markets.Where(m => Titulo_ChanceDupla.Contains(m.Name)).First().Selections[indice_VitoriaEmpateTimeDaCasa].Price ?? 0;
-            partida.ODD_VitoriaOuEmpate_TimeVisitante = data.Markets.Where(m => Titulo_ChanceDupla.Contains(m.Name)).First().Selections[indice_VitoriaEmpateTimeVisitante].Price ?? 0;
+            partida.ODD_Vitoria_TimeDaCasa = RetornarOdd(this.Titulo_ResultadoFinal, "1");
+            partida.ODD_Empate_Ambos = RetornarOdd(this.Titulo_ResultadoFinal, "X");
+            partida.ODD_Vitoria_TimeVisitante = RetornarOdd(this.Titulo_ResultadoFinal, "2");
+            partida.ODD_VitoriaOuEmpate_TimeCasa = RetornarOdd(this.Titulo_ChanceDupla, "1X");
+            partida.ODD_VitoriaOuEmpate_TimeVisitante = RetornarOdd(this.Titulo_ChanceDupla, "X2");
         }
         catch (Exception)
         {
-            Console.WriteLine("Lançou erro daqui 2");
+            Console.WriteLine("Lanï¿½ou erro daqui 2");
             throw;
         }
     }
@@ -153,7 +160,7 @@ class Betano : CasaDeAposta
         }
         catch (Exception)
         {
-            Console.WriteLine("Lançou erro daqui 1");
+            Console.WriteLine("Lanï¿½ou erro daqui 1");
             throw;
         }
     }
@@ -172,7 +179,7 @@ class Betano : CasaDeAposta
         }
         catch (Exception ex)
         {
-            SalvarLog($"Lançou erro no link: ${link} \n {ex.Message} \n {ex.InnerException.Message}");
+            SalvarLog($"Lanï¿½ou erro no link: ${link} \n {ex.Message} \n {ex.InnerException.Message}");
         }
         finally
         {

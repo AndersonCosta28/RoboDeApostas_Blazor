@@ -158,8 +158,8 @@ class Sportsbet_IO : CasaDeAposta
                 }
 
                 partida.ODD_Vitoria_TimeDaCasa = RetornarOdd(this.Titulo_ResultadoFinal, partida.NomeTimeDaCasa);
-                partida.ODD_Empate_Ambos = RetornarOdd(this.Titulo_ResultadoFinal, partida.NomeTimeVisitante);
-                partida.ODD_Vitoria_TimeVisitante = RetornarOdd(this.Titulo_ResultadoFinal, "Empate");
+                partida.ODD_Empate_Ambos = RetornarOdd(this.Titulo_ResultadoFinal, "Empate");
+                partida.ODD_Vitoria_TimeVisitante = RetornarOdd(this.Titulo_ResultadoFinal, partida.NomeTimeVisitante);
                 partida.ODD_VitoriaOuEmpate_TimeCasa = RetornarOdd(this.Titulo_ChanceDupla, $"{partida.NomeTimeDaCasa} ou empate");
                 partida.ODD_VitoriaOuEmpate_TimeVisitante = RetornarOdd(this.Titulo_ChanceDupla, $"Empate ou {partida.NomeTimeVisitante}");
             })
